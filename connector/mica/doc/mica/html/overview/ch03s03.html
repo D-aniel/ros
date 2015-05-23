@@ -1,0 +1,32 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Installing MICA</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.0"><link rel="home" href="index.html" title="Mica User's Guide"><link rel="up" href="ch03.html" title="Chapter 3. Installing and running MICA"><link rel="prev" href="ch03s02.html" title="MICA requirements"><link rel="next" href="ch03s04.html" title="A more detailed look"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Installing MICA</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s02.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Installing and running MICA</th><td width="20%" align="right"> <a accesskey="n" href="ch03s04.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp18308744"></a>Installing MICA</h2></div></div></div><p>To install MICA, take the tar.gz (where version is the current
+      version) file and use the following commands to unzip it:</p><p><span class="command"><strong> % jar xvfz mica-2.0-{version}.jar </strong></span></p><p>This sets up a subdirectory <span class="command"><strong>mica-2.0-{version}</strong></span>
+      that contains all the mica files and documentation. You should move into
+      that directory. The next step that needs to be completed is that the
+      classpath must be set up. You should add the following jar files to your
+      classpath (all from the jars directory):</p><div class="itemizedlist"><ul type="disc"><li><p><code class="filename">hsqldb.jar</code></p></li><li><p><code class="filename">mica.jar</code></p></li><li><p><code class="filename">weka.jar</code> (optional: only necessary for
+            supporting the LearningAgent)</p></li><li><p><code class="filename">framescript.jar</code> (optional: only
+            necessary for supporting the WhizBang demo)</p></li></ul></div><p>Exactly how you do this depends on your operating system. For
+      example, under Windows, it can be done using (excluding the optional
+      jars, don't forget to include them if you need them):</p><p><span class="command"><strong>set
+      CLASSPATH=jars/hsqldb.jar;jars/mica.jar</strong></span></p><p>Under bash (e.g. Linux or MacOS) it might be:</p><p><span class="command"><strong>export
+      CLASSPATH=jars/hsqldb.jar:jars/mica.jar</strong></span></p><p>Once you have set up the classpath, you can now start the
+      MicaRunner. MicaRunner is a graphical user interface that allows the
+      blackboard and the agents to be started independently. A picture of the
+      MicaRunner is shown in figure <a class="xref" href="ch03s03.html#MicaRunner" title="Figure 3.1. MicaRunner window">Figure 3.1</a>.</p><div class="figure"><a name="MicaRunner"></a><div class="figure-contents"><div class="mediaobject"><img src="../diagrams/micarunner2.png" alt="MicaRunner window"></div></div><p class="title"><b>Figure 3.1. MicaRunner window</b></p></div><br class="figure-break"><p>MicaRunner takes a file that tells it which agents it should load.
+      In this particular case, in the mica directory, a file called
+      <code class="filename">sharedpad-run.xml</code> specifies which agents to load.
+      MicaRunner can be run by typing:</p><p><span class="command"><strong>% java unsw.cse.mica.runner.MicaRunner
+      examples/run/sharedpad-run.xml</strong></span></p><p>Once loaded, hit the "Start all" button to start the agents. You
+      should now see a total of three windows (they may actually be
+      overlapping, so move them as appropriate). For the moment, put the "Mica
+      Blackboard Display" window aside, and just move the Shared Pad windows
+      into a convenient place. Drawing in one window should lead to lines
+      appearing in the opposite window and vice versa. In this case, both of
+      the SharedPad windows are clients that connect to the blackboard. When
+      you drag the mouse in either window, then the client creates a mob with
+      a description of the line and writes it to the blackboard. Since
+      SharedPad clients register their interests in lines, both clients are
+      informed of the newly added line and draw it on their canvases. If you
+      now look at the "Mica Blackboard Display" window, and click on the "MICA
+      Objects" node, there is a complete list of all the Mobs that have been
+      written on the blackboard.</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">MICA requirements </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> A more detailed look</td></tr></table></div></body></html>

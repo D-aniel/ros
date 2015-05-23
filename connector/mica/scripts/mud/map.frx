@@ -1,0 +1,48 @@
+<script>
+	<generic name="TOWN">
+		<parent name="LOCATION"/>
+		<facet name="shops">
+			<daemon name="range">
+				<code>SHOP</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="SHOP">
+		<parent name="LOCATION"/>
+	</generic>
+	<generic name="WILDERNESS">
+		<parent name="LOCATION"/>
+		<facet name="monster">
+			<cache value="true"/>
+			<daemon name="range">
+				<code>MONSTER</code>
+			</daemon>
+			<daemon name="if_new">
+				<code>new SPIDER</code>
+			</daemon>
+		</facet>
+		<facet name="long_description">
+			<daemon name="if_needed">
+				<code>if defined(monster) then
+	if (health of monster &gt; 0) then
+		&lt;&lt; ^description There is ^(description of monster) standing in your way. &gt;&gt;
+	else
+		&lt;&lt; ^description The body of a ^(type of monster) is lying on the ground. &gt;&gt;
+else
+	description</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="ROAD">
+		<parent name="WILDERNESS"/>
+	</generic>
+	<generic name="DUNGEON">
+		<parent name="WILDERNESS"/>
+	</generic>
+	<instance name="road1">
+		<parent name="ROAD"/>
+		<slot name="description">
+			<value>&lt;&lt; You find yourself on a long stretch of road running north-south. &gt;&gt;</value>
+		</slot>
+	</instance>
+</script>

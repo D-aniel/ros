@@ -1,0 +1,394 @@
+solar_system ::
+	domain solar
+	trigger << init >>
+	
+	init ==>
+		[ Hello there. ]
+;;
+
+_MASS_ :: { mass | heavy };;
+_VOLUME_ :: { big | large | volume };;
+_DIAMETER_ :: { around | diameter |  radius | size };;
+_ORBIT_ :: { long * around * sun | year | orbit };;
+_ATMOSPHERE_ :: { atmosphere };;
+_TEMPERATURE_ :: { hot | cold | temperature };;
+_FROM_SUN_ :: { perihelion | aphelion | from * sun };;
+_MOON_ :: { moon | moons };;
+
+solar_failsafe ::
+	failsafe general_failsafe
+	
+	* {planet~} * ==>
+	[
+		The planets orbiting our sun are: Mercury, Venus, Earth,
+		Mars, Jupiter, Saturn,  Uranus, Neptune and Pluto.
+	]
+
+	* {comet~} * ==>
+	[
+		Comets are often thought of a dirty snowballs left over
+		from the creation of the Solar System.  They have very
+		eccentric orbits taking them out past the orbit of Pluto.
+	]
+
+	* {oort | kuiper * belt } * ==>
+	[
+		The Oort Cloud is a spherical cloud of gas and comets
+		surrounding the Solar System.  Most comets we see are from
+		the Oort Cloud, but some are from the Kuiper Belt which
+		lies past the orbit of Neptune.
+	]
+
+	* { asteroid~ } * ==>
+	[
+		Asteroids are much like huge rocks, or very small
+		satellites, orbiting the Sun.  Over 7000 of them have been
+		discovered.
+	]
+
+	* solar flare * ==>
+	[
+		Solar flares are really big.  They are like pieces of the
+		Sun caught in magnetic rivers and thrown from the sun.
+	]
+
+	* solar wind * ==>
+	[
+		Solar wind is all of the particles that managed to escape
+		the Sun and fly through the Solar System.  The solar wind
+		travels at about 450 kilometers per second.
+	]
+	
+	* sun * ==>
+		#goto(sun, ^0)
+;;
+
+general_failsafe ::
+	NOMOREALTS ==>
+	{
+		Sorry, I don't understand.
+	|
+		I'm sorry, I didn't catch that.
+	}
+	
+	* ==> [ RECOGALT ]
+;;
+
+sun ::
+	* <_MASS_> * ==>
+	[
+		The Sun is 1,989,100 times ten to the twenty-fourth
+		kilograms. That is 33,2950 times as massive as Earth.
+	]
+	
+	* <_VOLUME_> * ==>
+	[
+		The Sun is so big that 1,304,000 Earths could fit inside.  It
+		has a volume of 1,412,000 times ten to the twelfth cubic
+		kilometers.
+	]
+	
+	* { in | made } * ==>
+	[
+		The Sun is about 91 percent Hydrogen and 8.9 percent
+		Helium.  There is also Oxygen, Carbon, Neon, Nitrogen, and
+		many other elements in the Sun.
+	]
+	
+	* sun * ==>
+	[
+		What would you like to know about the Sun?  I know how
+		massive it is, and how big it is, and I also know what it
+		is made of.
+	]
+;;
+
+planet ::
+	trigger << * ^name * >>
+	
+	* <_MASS_> * ==>
+		^(if defined(mass) then
+			<<{ ^name weighs in at ^mass kilograms. 
+				| ^name has a mass of ^mass kilograms. }>>
+		else
+			<< I don't know what the mass of ^name is. >>)
+		
+	* <_VOLUME_> * ==>
+		^(if defined(volume) then
+			<<{ ^name has a volume of ^mass cubic kilometers. }>>
+		else
+			<< I don't know what the volume of ^name is. >>)
+	
+	* <_DIAMETER_> *  ==>
+		^(if defined(diameter) then
+			<<{ The diameter of ^name is ^diameter kilometers. 
+				| ^name has a diameter of ^diameter kilometers. }>>
+		else
+			<< I don't know what the diameter of ^name is. >>)
+	
+	* <_ORBIT_> * ==>
+		^(if defined(orbit) then
+			<<{ ^name takes ^orbit to orbit the sun. 
+				| It takes ^orbit for ^name to orbit the sun. 
+				| ^name goes around the sun every ^orbit. }>>
+		else
+			<< I don't know how long ^name takes to orbit the sun. >>)
+	
+	* <_ATMOSPHERE_> *  ==>
+		^(if defined(atmosphere) then
+			^atmosphere
+		else
+			<< I don't know what the atmosphere of ^name is like. >>)
+	
+	* <_TEMPERATURE_> * ==>
+		^(if defined(temperature) then
+			<<{ The temperature on ^name is about ^temperature degrees kelvin or
+				about ^(temperature - 273) degrees Celsius. }>>
+		else
+			<< I don't know what the temperature of ^name is. >>)
+	
+	* <_FROM_SUN_> * ==>
+		^(if defined(aphelion) then
+			if defined(perihelion) then
+				<< ^name orbits the sun between ^perihelion and
+				^aphelion kilometers. >>
+			else
+				<< ^name orbits the sun around ^aphelion kilometers. >>
+		else if defined(perihelion) then
+			<< ^name orbits the sun around ^perihelion kilometers. >>
+		else
+			<< I don't know how far ^name is from the sun. >>)
+	
+	* _MOON_ * ==>
+		^(if defined(moons) then
+			^moons
+		else
+			<< ^name has no moons. >>)
+	
+	* ^name * ==>
+		[ What would you like to know about ^name. ]
+;;
+
+mercury ::
+	domain solar
+	inherits planet
+	
+	name: << Mercury >>
+	mass: 3.302e23
+	volume: 6.085e10
+	diameter: 4880
+	orbit: << 87 days, 23 hours, and 15 minutes >>
+	atmosphere:
+		<< Mercury has almost no atmosphere, but what is there is
+		thought to be 42 percent Oxygen, 29 percent Sodium, 22
+		percent Hydrogen, 6 percent Helium, and a little of some
+		other gasses. >>
+	temperature: 440
+	aphelion: 69000000
+	perihelion: 46000000
+;;
+
+venus ::
+	domain solar
+	inherits planet
+	
+	name: << Venus >>
+	mass: 4.869e24
+	volume: 9.284e11
+	diameter: 12104
+	orbit: << 224.7 days >>
+	atmosphere:
+		<< Venus' atmosphere is very thick. It is mostly made of
+		78.084 percent Nitrogen, 20.946 percent Oxygen, and also
+		contains: Argon, Carbon Dioxide, and others. >>
+	temperature: 737
+	aphelion: 108900000
+	perihelion: 107500000
+;;
+
+earth ::
+	domain solar
+	inherits planet
+	
+	name: << Earth >>
+	mass: 5.974e24
+	volume: 1.083e12
+	diameter: 12756
+	orbit: << 364.25 days >>
+	atmosphere:
+		<< Lucky for you, Earth's atmosphere is breathable.  It is
+		made of 78.084 percent Nitrogen, 20.946 percent Oxygen, and
+		also contains: Argon, Carbon Dioxide, Neon, and Helium. >>
+	temperature: 288
+	aphelion: 152100000
+	perihelion: 147100000
+	
+	* <_MOON_> * ==>
+		#goto(moon, ^0)
+;;
+
+mars ::
+	inherits planet
+	domain solar
+	
+	name: << Mars >>
+	mass: 6.419e23
+	volume: 1.631e11
+	diameter: 3390
+	orbit: << 1.9 years >>
+	atmosphere:
+		<< Mars' atmosphere is pretty thin.  It is mostly made of
+		Carbon Dioxide, 95.32 percent; Nitrogen, 2.7 percent;
+		Argon, 1.6 percent; Oxygen 0.13 percent; and a small amount
+		of other gasses. >>
+	temperature: 210
+	aphelion: 206600000
+	perihelion: 20660000
+	moons:
+		<< Mars has two satellites: Deimos and Phobos. >>
+;;
+
+jupiter ::
+	domain solar
+	inherits planet
+	
+	name: << Jupiter >>
+	mass: 1.898e27
+	volume: 1431e15
+	diameter: 139822
+	orbit: << 11.9 years >>
+	atmosphere:
+		<< Jupiter is extremely turbulent, and has Molecular hydrogen
+		89.8 percent, Helium 10.2 percent, and lots of other stuff.
+		Jupiter is like a really cold star. >>
+	temperature: 129
+	aphelion: 816000000
+	perihelion: 740600000
+	moons:
+		<< Jupiter has 16 moons, but there are only four worth talking
+		about: Io, Europa, Ganymede, and Callisto. >>
+;;
+
+saturn ::
+	domain solar
+	inherits planet
+	
+	name: << Saturn >>
+	mass: 5.684e26
+	volume: 8.271e14
+	diameter: 120536
+	orbit: << 30 years >>
+	atmosphere:
+		<< Saturn has a cool atmosphere with molecular hydrogen 96.3
+		percent, Helium 3.25 percent, that's a lot of hydrogen. >>
+	temperature: 97
+	aphelion: 1506400000
+	perihelion: 1347600000
+	moons:
+		<< Saturn has eight major satellites and ten lesser satellites. >>
+;;
+
+uranus ::
+	domain solar
+	inherits planet
+	
+	name: << Uranus >>
+	mass: 8.683e25
+	volume: 6.833e13
+	diameter: 50724
+	orbit: << 84 years >>
+	atmosphere:
+		<< Uranus like the other gas giants is mostly made of
+		Molecular hydrogen 82 percent, Helium 15 percent, and
+		Methane 2 percent. >>
+	temperature: 58
+	aphelion: 3005200000 
+	perihelion: 2734000000
+	moons:
+		<< Uranus has five major satellites and ten lesser satellites. >>
+;;
+
+neptune ::
+	domain solar
+	inherits planet
+	
+	name: << Neptune >>
+	mass: 1.024e26
+	volume: 6.254e13
+	diameter: 49248
+	orbit: << 164 years >>
+	atmosphere:
+		<< Neptune atmosphere is mostly made of Molecular hydrogen 80 percent,
+		Helium 19 percent, and Methane 1.5 percent. >>
+	temperature: 58
+	aphelion: 4535200000 
+	perihelion: 4458000000
+	moons:
+		<< Neptune has eight satellites.  Triton is by far the largest. >>
+;;
+
+pluto ::
+	domain solar
+	inherits planet
+	
+	name: << Pluto >>
+	mass: 1.25e22
+	volume: 6.16e9
+	diameter: 2274
+	atmosphere:
+		<< Pluto's atmosphere is extreamly thin and contains Methane,
+		and Nitrogen. >>
+	temperature: 50
+	aphelion: 7381200000
+	perihelion: 4458000000
+	moons:
+		<< Pluto only has one satellite, named Charon. >>
+	
+	* <_ORBIT_> * ==>
+	[
+		It takes pluto about two and a half centuries to go around
+		the Sun. It has a very eccentric orbit and for part of its
+		year, Pluto is inside Neptune's orbit.
+	]
+;;
+
+moon ::
+	domain solar
+	trigger << * { { the | earth's } moon } * >>
+	
+	
+	* <_MASS_> * ==>
+	[
+		The mass of the moon is 7.349e22 times ten to the
+		twenty-fourth kilograms
+	]
+
+	* <_VOLUME_> * ==>
+	[
+		The volume of the moon is 2.197e10 kilometers.
+	]
+
+	* { long * get | time * get } * ==>
+	[
+		The Apollo missions took about three days to reach the Moon.
+	]
+
+	* far * ==>
+	[
+		At it's closest the moon is 363300 kilometers from the
+		Earth, and at it's farthest it is 405500 kilometers.
+	]
+
+	* cheese * ==>
+	[
+		No, the moon is not made of cheese, but there may be enough
+		water on the moon that people will someday use it to drink
+		and to fuel spaceships.
+	]
+
+	* moon * ==>
+	[
+		I love to talk about Earth's moon.  What do you want to
+		hear about it?
+	]
+;;

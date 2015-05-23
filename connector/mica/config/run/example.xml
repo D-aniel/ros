@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  an example XML script for the MicaRunner. The one (and only) document-level element must be
+  "runner".
+-->
+<runner>
+
+	<!-- the "host" element specifies the location of the blackboard to which agents will be connected -->
+	<host name="localhost" />
+	
+	<!-- the "port" element specifies the port number to be used by the blackboard / agents -->
+	<port number="8500" />
+
+	<!-- The "home" element specifies the Mica home directory This value is passed to the child processes as
+	  a property. It is optional, the default being "." if no value is specified.  -->
+	<home dir="." />
+
+	<!-- The "size" element is optional, and specifies the desired size of the Runner Frame -->
+	<size width="800" height="500" />
+
+	<!-- The "pos" element is optional, and specifies the desired position of the Runner Frame -->	
+	<pos x="0" y="0" />
+	
+	<!--
+	  The "debug" element is optional, and specifies the default debug level for both the runner
+	  processes and the child processes. If not specified, the default debug level is used.
+	  Note that child processes may over-ride this value. The level may be specified as
+	  either an integer, or a string representing one of the pre-defined internal levels.
+	-->
+	<debug level="trace" />
+	
+	<!-- the "java" element is optional, and specifies the java executable that will be called
+	  when the child processes are run. It may take either a relative or absolute value. The
+	  default value (if none is specified) is "java".
+	-->
+	<java app="javaw" />
+	
+	<!-- the "catch" element is optional, and specifies a default value for the agent processes.
+	  The default value (if none is specified) is "true".
+	-->
+	<catch value="true" />
+	
+	<!--
+	  The "blackboard" element describes the blackboard child process. No attributes are used.
+	  Additional information is stored in the child elements. Legal child elements are:
+	  - "restore", which must have an attribute called "value" with a boolean value
+	  - "debug", which has the same syntax as the default debug level element
+	-->
+	<blackboard>
+		<restore value="true" />
+		<debug level="10" />
+	</blackboard>
+	
+	<!--
+      The file may contain several "agent" elements, each describing a single child process.
+	  Each agent element must contain a "class" attribute with the fully-qualified name of the 
+	  agent class. Any other information is stored in the child elements.
+	  Legal child elements are:
+	  - "debug", which has the same syntax as the default debug level element
+	  - "watcher", which specifies whether or not the child process should have a watcher thread
+	    attached to it. A watcher thread uses System.in of the child process to recieve control
+	    messages from the Runner. Using a watcher thread allows correct agent termination, but the
+	    price is the loss of System.in, which is now taken up by the framework. Disabling a watcher
+	    thread leaves System.in open to the Agent, but the Agent process is no longer cleanly terminated
+        (on termination, a forced shutdown occurs, so the agent's terminate() method won't be called).
+        This element is optional, and the watcher thread is enabled by default.
+      - "catch", which specifies whether or not the agent should attempt to catch and graphically
+        exceptions raised in any of the agent or agent transport method, or simply let them be
+        handled by the system. This element is optional, and exception catching is
+        enabled by default.
+  	  - "arg", which specifies data to be passed to the init() method of the agent. There may be
+  	    any number of arg nodes, each of which has a mandatory "param" attribute and an optional
+  	    "value" attribute.
+  	-->
+	<agent class="unsw.cse.mica.tools.Debugger">
+		<watcher value="true" />
+		<catch value="false" />
+		<arg param="x" value="800" />
+		<arg param="y" value="0" />
+		<arg param="width" value="400" />
+		<arg param="height" value="500" />
+	</agent>
+	
+	
+</runner>

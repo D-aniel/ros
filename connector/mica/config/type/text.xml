@@ -1,0 +1,13 @@
+<typedesc>
+	<mobdecl name="text">
+		<slot name="utterance"/>
+	</mobdecl>
+	<mobdecl name="textFromUser">
+		<parent name="text"/>
+	</mobdecl>
+	<mobdecl name="textForUser">
+		<slot name="speaker"/>
+		<parent name="text"/>
+	</mobdecl>
+</typedesc>
+	

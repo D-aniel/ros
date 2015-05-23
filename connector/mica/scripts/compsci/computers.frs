@@ -1,0 +1,6 @@
+COMPUTER ::
+	trigger { * { computer | computers } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ COMPUTER ]);;

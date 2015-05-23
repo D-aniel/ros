@@ -1,0 +1,190 @@
+//load_module("unsw.cse.framescript.GUI");;
+
+pilot ::
+	domain pilot_sim
+	
+	<change_heading> ==>
+	[
+		#changeHeading(^1)
+		Changing heading to ^1.
+	]
+	
+	<change_altitude> ==>
+	[
+		#changeAltitude(^1)
+		[ ^(^1 > currentAltitude()) ->
+			Increasing altitude to ^1.
+		| ^(^1 <= currentAltitude()) ->
+			Decreasing altitude to ^1.
+		]
+	]
+	
+	<change_speed> ==>
+	[
+		#changeSpeed(^1)
+		[ ^(^1 > currentSpeed()) ->
+			Increasing speed to ^1.
+		| ^(^1 <= currentSpeed()) ->
+			Decreasing speed to ^1.
+		]
+	]
+	
+	set course <heading> altitude <altitude> speed <speed> ==>
+	[
+		#changeHeading(^1)
+		#changeAltitude(^2)
+		#changeSpeed(^3)
+		Setting course ^1, altitude ^2, speed ^3.
+	]
+	
+	^courseAlteration ==>
+		^explainAlteration(^1)
+	
+	NOMOREALTS ==>
+	[
+		Please repeat that flight control.
+	]
+	
+	* ==>
+		RECOGALT
+;;
+
+explainAlteration(A) = (
+	if defined(heading of A) and defined(altitude of A) and defined(speed of A) then
+		<< Setting course to ^(heading of A), altitude ^(altitude of A), speed ^(speed of A): ^(reason of A). >>
+	else if defined(heading of A) then
+		<< Turning to ^(heading of A): ^(reason of A). >>
+	else if defined(altitude of A) then
+		if altitude of A > currentAltitude() then
+			<< Increasing altitude to ^(altitude of A): ^(reason of A). >>
+		else
+			<< Decreasing altitude to ^(altitude of A): ^(reason of A). >>
+	else if defined(speed of A) then
+		if speed of A > currentSpeed() then
+			<< Increasing speed to ^(speed of A): ^(reason of A). >>
+		else
+			<< Decreasing speed to ^(speed of A): ^(reason of A). >>
+	else
+		<< Altering course: ^(reason of A). >>
+);;
+
+change_heading ::
+	{ change heading | come about } to <heading> ==>
+		^2
+;;
+
+change_altitude ::
+	{ increase | decrease } altitude to <altitude> ==>
+		^2
+;;
+
+change_speed ::
+	{ increase | decrease } speed to <speed> ==>
+		^2
+;;
+
+heading ::
+	<number> #(^1 >= 0 and ^1 <= 360) ==>
+		^1
+;;
+
+altitude ::
+	<number> ==> ^1
+;;
+
+speed ::
+	<number> ==> ^1
+;;
+
+number ::
+	~ #(number(^1)) ==> ^1
+	
+	<digit_list> ==>
+		^digit_list_to_number(^1)
+	
+	<thousands> ==> ^1
+;;
+
+digit_list ::
+	<digit><digit_list> ==>
+		^cons(^1, ^2)
+	<digit><digit> ==>
+		^([ ^1 ^2 ])
+;;
+
+digit_list_to_number(L) = (
+	var rval;
+	rval = 0;
+	forall I in L : (
+		rval = rval * 10 + I
+	);
+	rval
+);;
+
+thousands ::
+	<hundreds> thousand { and | _ } <hundreds> ==>
+		^(^1 * 1000 + ^3)
+	<hundreds> thousand ==>
+		^(^1 * 1000)
+	<hundreds> ==>
+		^1
+;;
+
+hundreds ::
+	<double_digit> hundred { and | _ } <double_digit> ==>
+		^(^1 * 100 + ^3)
+	<double_digit> hundred ==>
+		^(^1 * 100)
+	<double_digit> ==>
+		^1
+;;
+
+double_digit ::
+	<teens> ==>
+		^1
+	<tens> <digit> ==>
+		^(^1 + ^2)
+	<tens> ==>
+		^1
+	<digit> ==>
+		^1
+;;
+
+teens ::
+	ten ==> 10
+	eleven ==> 11
+	twelve ==> 12
+	thirteen ==> 13
+	fourteen ==> 14
+	fifteen ==> 15
+	sixteen ==> 16
+	seventeen ==> 17
+	eighteen ==> 18
+	nineteen ==> 19
+;;
+
+tens ::
+	twenty ==> 20
+	thirty ==> 30
+	forty ==> 40
+	fifty ==> 50
+	sixty ==> 60
+	seventy ==> 70
+	eighty ==> 80
+	ninety ==> 90
+;;
+
+digit ::
+	{ zero | oh } ==> 0
+	one ==> 1
+	two ==> 2
+	three ==> 3
+	four ==> 4
+	five ==> 5
+	six ==> 6
+	seven ==> 7
+	eight ==> 8
+	nine ==> 9
+;;
+
+//script_browser();;

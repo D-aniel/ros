@@ -1,0 +1,6 @@
+SLAM ::
+	trigger { * { slam } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ SLAM ]);;

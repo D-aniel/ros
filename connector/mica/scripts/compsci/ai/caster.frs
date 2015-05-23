@@ -1,0 +1,6 @@
+CASTER ::
+	trigger { * { caster | robot rescue | rescue robot } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ CASTER ]);;

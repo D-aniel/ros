@@ -1,0 +1,46 @@
+<runner>
+	
+	<pos x="0" y="0" />
+	
+	<host name="localhost"/>
+	
+	<port number="8500"/>
+	
+	<debug level="information" />
+	
+	<home dir=".." />
+	
+	<blackboard>
+		<persistent value="false" />
+		<debug level="information" />
+	</blackboard>
+ 
+ 	<agent class="unsw.cse.mica.tools.LogDebugger">
+ 	</agent>
+ 
+	<agent class="unsw.cse.mica.learner.LearnerAgent">
+ 	</agent>
+
+	<agent class="unsw.cse.mica.demo.EmailAgent">
+ 	</agent>	
+
+	<agent class="unsw.cse.mica.demo.WhizBang">
+   		<needs name="EmailAgent"/>
+   		<needs name="LearnerAgent"/>
+ 	</agent>
+ 	
+	<agent class="unsw.cse.framescript.MicaBot">
+		<needs name="WizBang"/>
+		<arg param="transient" value="false" />
+		<arg param="file" value="../scripts/whizbangdemo.frs"/>
+		<arg param="domain" value="whizbang"/>
+		<arg param="init" value="initinit"/>
+		<debug level="information"/>
+	</agent>
+	
+	<agent class="unsw.cse.mica.learner.TreeView">
+  		<needs name="EmailAgent"/>
+		<arg param="modelFile" value="tmp/readordisplay.mdl"/>
+	</agent>
+
+</runner>

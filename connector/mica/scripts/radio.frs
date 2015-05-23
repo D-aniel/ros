@@ -1,0 +1,104 @@
+//load_module("unsw.cse.framescript.GUI");;
+
+_radio_station_ ::
+--
+	var rval, STATIONS;
+	STATIONS = instances_of(radio_station);
+	forall S in STATIONS :	(
+		if (undefined(rval) and match(as_pattern(nicks of S))) then
+			rval = S;
+	);
+	rval
+;;
+
+_switch_ ::
+	{ turn | switch | change | put };;
+
+_hear_ ::
+	{ hear | listen to };;
+
+_up_down_ ::
+	{ increase | raise | up } ==> up
+	{ decrease | lower | down } ==> down
+;;
+
+_volume_ ::
+	{ volume | sound | noise | radio | music };;
+
+make_transient(M) = (
+	put(M, persistence, quote(transient));
+);;
+
+radio(C) = (
+	var newMob;
+	newMob = new radio;
+	put(newMob, command, C);
+	make_transient(newMob);
+	mica_write_mob(newMob)
+);;
+
+radio(C, S) = (
+	var newMob;
+	newMob = new radio;
+	put(newMob, command, quote(switch));
+	if (defined(C)) then
+		put(newMob, channel, C);
+	put(newMob, freq, S);
+	make_transient(newMob);
+	mica_write_mob(newMob)
+);;
+
+main ::
+	domain demo
+	failsafe failsafe
+	init ==> [Good morning. ]
+	
+	* <_switch_> * <_radio_station_> ==>
+		#radio(name of ^4, freq of ^4)
+	
+	* <_hear_> * <_radio_station_> ==>
+		#radio(name of ^4, freq of ^4)
+	
+	* <_hear_> * { radio | music } ==>
+		#radio(on)
+	
+	* radio * on ==>
+		#radio(on)
+		
+	* radio * off ==>
+		#radio(off)
+	
+	* on * radio ==>
+		#radio(on)
+	
+	* off * radio ==>
+		#radio(off)
+	
+	* { on | off } * it ==>
+		#radio(^2) 
+	
+	* it * { on | off } ==>
+		#radio(^3)
+		
+	* <_volume_> * <_up_down_> ==>
+		#radio(^4)
+	
+	* <_up_down_> * <_volume_> ==>
+		#radio(^2)
+	
+	* it * <_up_down_> ==>
+		#radio(^3)
+	
+	* <_up_down_> * it ==>
+		#radio(^2)
+;;
+
+failsafe ::
+	
+	* <_switch_> * ==> [ I don't know what you want to switch to. ]
+	
+	* ==> [ I don't understand. ]
+;;
+
+//script_browser();;
+//frame_browser();;

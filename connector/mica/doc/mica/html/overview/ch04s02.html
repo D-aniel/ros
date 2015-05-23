@@ -1,0 +1,183 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>A quick walk through the MICA API</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.0"><link rel="home" href="index.html" title="Mica User's Guide"><link rel="up" href="ch04.html" title="Chapter 4. The MICA implementation"><link rel="prev" href="ch04.html" title="Chapter 4. The MICA implementation"><link rel="next" href="ch04s03.html" title="The MICA type system"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">A quick walk through the MICA API</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch04.html">Prev</a> </td><th width="60%" align="center">Chapter 4. The MICA implementation</th><td width="20%" align="right"> <a accesskey="n" href="ch04s03.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp18330016"></a>A quick walk through the MICA API</h2></div></div></div><p>There are several important classes that make up the MICA
+      implementation; in this section, we will go through the most important
+      classes and their methods.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="idp18330744"></a><code class="classname">unsw.cse.mica.data.Mob</code></h3></div></div></div><p>The Mob is the basic unit of information storage and
+        communication in MICA. As previously mentioned, each Mob has a name, a
+        type and a set of slots that define it. Let's have a look at two real
+        Mobs (as output by its <code class="function">toString()</code> method).</p><div class="figure"><a name="simplemob"></a><div class="figure-contents"><pre class="programlisting">Mob sharedPadLine_103 of type sharedPadLine has slots:
+  creationTime: [2003-08-07 12:13:21.246]
+  creator: [sharedPad_1]
+  oldX: [69]
+  oldY: [151]
+  newX: [68]
+  newY: [151]</pre></div><p class="title"><b>Figure 4.1. A simple mob</b></p></div><br class="figure-break"><p>In the above code, the mob's name is
+        <code class="classname">sharedPadLine_103</code> (a name that was allocated
+        when this object was written to the blackboard) and its type is
+        <code class="classname">sharedPadLine</code>. It has six slots, but all of the
+        slots have a single value. Let's look at a more complex
+        example.</p><div class="figure"><a name="complexmob"></a><div class="figure-contents"><pre class="programlisting">Mob emailListReply_12 of type emailListReply has slots:
+  creationTime: [2003-07-31 16:01:02.24]
+  creator: [emailAgent]
+  from: [waleed@cse.unsw.edu.au, foo@bar.com, bar@baz.com]
+  subject: [What's up?, Bugs in MICA, Romeo and Juliet screening]
+  count: [3]</pre></div><p class="title"><b>Figure 4.2. A more complex Mob</b></p></div><br class="figure-break"><p><a class="xref" href="ch04s02.html#complexmob" title="Figure 4.2. A more complex Mob">Figure 4.2</a> shows slots containing multiple
+        values. The current implementation allows only Strings to be stored in
+        slots, but this is still a very flexible representation. For example,
+        references to other mobs and complex data structures can be
+        constructed using slots that contain references to other Mobs.
+        Similarly, binary data can be stored using base-64 encoding.</p><p>The methods for mobs are consequently related to constructing a
+        Mob. Basically, there are several families of methods. The complete
+        documentation can be found in the java documentation.</p><div class="itemizedlist"><ul type="disc"><li><p><span class="emphasis"><em>Constructors:</em></span> The typical constructor
+            used to make a Mob is the <code class="methodname">Mob(String
+            mobType)</code> method. This creates a new Mob of the
+            specified type, but with an undefined name and no slots.
+            Typically, the Mob has no name until a name is actually given to
+            the Mob by writing it on the blackboard.</p></li><li><p><span class="emphasis"><em>Setting up slots:</em></span> There are a number of
+            functions to set up slots. <code class="methodname">setSlot(String slotName,
+            List slotValues)</code> allows you to set up a slot with all
+            of its values, while <code class="methodname">addSlot(String slotName, String
+            slotValue)</code> allows you to add a new value to a slot.
+            <code class="methodname">addEmptySlot(String slotName)</code> allows you
+            to set up a slot that has no values in it.</p></li><li><p><span class="emphasis"><em>Getting values from slots:</em></span> There are
+            two primary methods for getting values from slots:
+            <code class="methodname">getSlot(String slotName)</code> gets all the
+            list of values for a slot, but since there is a very common case
+            where the list contain a single value, there is also the
+            <code class="methodname">getSlot1(Strong slotName)</code> which returns a
+            single String, rather than an entire list. To get a slot value as
+            an integer, use <code class="methodname">getSlot1AsInt(String
+            slotName)</code>.</p></li></ul></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="idp18340600"></a>Transience</h4></div></div></div><p>On occassion, you want to use MICA merely as a traditional
+          publish/subscribe mechanism, i.e. you do not want to save the mob
+          you are writing on the blackboard, you just want that mov delivered
+          to anyone who is interested. Such mobs can be labelled as transient.
+          Transient mobs are not stored on the blackboard, but other agents
+          interested in the mobs are notified. To mark a mob as transient, use
+          the <code class="methodname">makeTransient()</code> method.</p><p>Note that as of Mica 2.0, transience can also be defined using
+          the type manager. If a type is specified in this way, the blackboard
+          will ensure that all Mobs of that type are transient, so agents
+          creating these mobs are not required to do so.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="idp18342312"></a>Reserved slot names</h4></div></div></div><p>The following slot names are reserved and are used by the
+          system: <code class="classname">creator, creationTime, deleter,
+          deletionTime</code> and <code class="classname">persistence</code>.
+          Setting these slot names can lead to unexpected events and should be
+          avoided.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="idp18343592"></a><code class="classname">unsw.cse.mica.agent.AgentTransport</code></h3></div></div></div><p><code class="classname">AgentTransport</code> is an interface that
+        represents a connection to the blackboard. As such, the
+        <code class="classname">AgentTransport</code> is the only "view" that the
+        agent actually gets of the blackboard. For this reason, the
+        <code class="classname">AgentTransport</code> encapsulates all the
+        functionality of the board. Whenever an agent wants to communicate
+        with the blackboard it does so through the agent transport. Similarly,
+        whenever the agent transport receives information about a new mob,
+        this is passed from the agent transport to the agent.</p><p>Because the <code class="classname">AgentTransport</code> is a proxy for
+        the blackboard, all its methods are basically proxy commands that are
+        forwarded to the blackboard. These are:</p><div class="itemizedlist"><ul type="disc"><li><p><span class="emphasis"><em>Connection commands:</em></span>
+            <code class="methodname">connect(String agentName)</code> and
+            <code class="methodname">disconnect()</code> are used to connect to the
+            blackboard. <code class="methodname">connect()</code> returns the agent
+            name that was given to the agent. The agent can request a
+            particular name, but this may not be granted since another agent
+            with this name may already exist.
+            <code class="methodname">disconnect()</code> obviously disconnects from
+            the blackboard.</p></li><li><p><span class="emphasis"><em>Getting type information from the
+            blackboard:</em></span> Agents can access the blackboard's type
+            manager using the
+            <code class="code"><code class="methodname">getTypeManager()</code></code>
+            command.</p></li><li><p><span class="emphasis"><em>Registering and unregistering:</em></span>
+            Registering is the way that you let the blackboard know that you
+            are interested in objects of a particular type. For instance, if
+            an agent is interested in lines, it registers for
+            <code class="classname">sharedPadLine</code> mobs. Whenever a
+            <code class="classname">sharedPadLine</code> mob is written to the
+            blackboard, the agent is sent a copy of the new mob. To register,
+            the <code class="methodname">register(String mobType)</code> can be used.
+            Similarly, if an agent is no longer interested in
+            <code class="classname">sharedPadLine</code>s anymore, it unregisters with
+            <code class="methodname">unregister(String mobType)</code></p></li><li><p><span class="emphasis"><em>Writing things on the blackboard</em></span>: To
+            write on the blackboard, <code class="methodname">writeMob(Mob m)</code>
+            can be used. <code class="methodname">writeMob</code> returns the name
+            that the object is finally given. The blackboard then handles the
+            forwarding of this message to anyone who is interested -- the
+            agent need not concern itself with how the information is
+            distributed.</p></li><li><p><span class="emphasis"><em>Deleting mobs from the blackboard</em></span>:
+            <code class="methodname">deleteMob(String mobName)</code> can be used to
+            delete information from the blackboard. However, this should be
+            done very carefully, since other mobs may refer to the mob.</p></li><li><p><span class="emphasis"><em>Getting mob information from the
+            blackboard</em></span>: To retrieve information from the
+            blackboard, one can use <code class="methodname">readMob(String
+            mobName)</code> if the name of the mob is known or
+            <code class="methodname">mobSearch(String micaQuery)</code> if a mob with
+            particular properties is sought. For a description of the query
+            language, see <a class="xref" href="ch04s05.html#sect.micaql" title="The MICA query language">the section called &#8220;The MICA query language&#8221;</a>.
+            <code class="methodname">mobSearch</code> will return all mobs that have
+            the desired properties.</p></li></ul></div><p><code class="classname">Mica V2 provides two primary implementations of the
+        AgentTransport interface:</code></p><div class="itemizedlist"><ul type="disc"><li><p>LocalAgentTranport provides a direct programmatic connection
+            between the agent's transport and the blackboard transport. Note
+            that this implementation has not been thoroughly tested.</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p><code class="classname">CompoundTransport</code> combines a
+            connection type (<code class="classname">AgentConnection</code>) with a
+            protocol (<code class="classname">AgentProtocol</code>) to create a
+            versatile component-based transport system. Currently available
+            connection types are <code class="classname">LocalAgentConnection</code>
+            and <code class="classname">TCPAgentConnection</code>, while the only
+            protocol currently implemented is
+            <code class="classname">XMLAgentProtocol</code>.</p></li></ul></div><div class="itemizedlist"><ul type="disc"><li><p><code class="classname">XMLOverTCPAgentTransport</code> sends
+            snippets of XML over a TCP network connection. This is the most
+            frequently used transport method, so much so that a new class has
+            been created to simplify the process of creating this transport
+            type. Currently this is the only type of transport used by
+            MicaRunner.</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="idp18358696"></a><code class="classname">unsw.cse.mica.agent.Agent</code></h3></div></div></div><p><code class="classname">Agent</code> encapsulates a single autonomous
+        unit for doing computation on the blackboard. It is implemented as an
+        interface. Implementing an agent consists of writing seven methods;
+        and <code class="classname">DefaultAgent</code> provides a reasonable default
+        for most of those.</p><div class="itemizedlist"><ul type="disc"><li><p><code class="methodname">setAgentTransport(AgentTransport
+            at)</code> and <code class="methodname">getAgentTransport()</code>
+            are used so that the agent can redirect calls to the blackboard
+            through the appropriate agent. <code class="classname">DefaultAgent</code>
+            provides a default for these two methods. In general,
+            <code class="methodname">DefaultAgent</code> should be extended, but in
+            some cases it is more convenient to implement
+            <code class="methodname">Agent</code> so that the agent itself can
+            inherit from another class.</p></li><li><p><code class="methodname">init(MicaProperties)</code>: This method
+            is called to start the agent operating. It is actually called by
+            the <code class="classname">AgentTransport</code> (see the section below).
+            Note that the <code class="methodname">init()</code> method should return
+            quickly; in particular, the agent transport should not start
+            sending messages until <code class="methodname">init()</code> returns. If
+            some complicated execution takes place, it should be done in
+            another thread. Also note that the <code class="methodname">init()</code>
+            method takes a MicaProperties object; these are usually extracted
+            from the startup file; but it provides a generic mechanism for
+            passing configuration info to the agent.</p></li><li><p><code class="methodname">terminate()</code>: This method is called
+            to stop the agent operating. It is typically called by the
+            MicaRunner.</p></li><li><p><code class="methodname">handleNewMob(Mob m)</code> This method is
+            called whenever a Mob we are registered for arrives.</p></li><li><p><code class="methodname">handleDeletedMob(Mob m)</code> This method
+            is called whenever a Mob we are registered for is deleted. The mob
+            being deleted is included. This is useful, as this gives us a last
+            opportunity to make a local copy of the Mob. If you inherit from
+            <code class="methodname">DefaultAgent</code>, there is a default
+            implementation that does nothing.</p></li><li><p><code class="methodname">handleTypeManagerChanged()</code> this
+            method is called whenever the blackboard's type manager changes.
+            The defaul is to do nothing.</p></li></ul></div><p>That's it! At its core, to implement most agents requires
+        writing the the <code class="methodname">init</code> and
+        <code class="methodname">handleNewMob</code> methods.</p><p><code class="classname">DefaultAgent2</code> provides additional
+        functionaliy over <code class="classname">DefaultAgent</code>, including
+        transport connection and disconnection, and providing a type manager
+        that is kept up-to-date with the blackboard's type manager.
+        <code class="classname">GUIAgent</code> extends this further to provide
+        skeleton support for an agent needing a GUI. It ensures that
+        terminating the agent closes the GUI and vice-versa.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="idp18368504"></a>Setting up Agents and Agent Transports</h3></div></div></div><p>The following section discusses how agents and agents are set
+        up. However, if you use the <code class="classname">MicaRunner</code> tool,
+        you need not concern yourself with such details; it handles the
+        setting up of agents and agent transports. On first reading, this
+        section can be glossed over.</p><p>Because the <code class="classname">Agent</code> and the
+        <code class="classname">AgentTransport</code> have a close relationship and
+        each can call the other, there are a few special hoops that have to be
+        jumped through in order to get them to work together. This is because
+        each need to know about the other, so it's tricky to set this up with
+        constructors and the like. The steps involved are:</p><div class="itemizedlist"><ul type="disc"><li><p>Construct the <code class="classname">Agent</code>.</p></li><li><p>Construct the <code class="classname">AgentTransport</code>, but
+            ensure one of the parameters is the the Agent constructed in the
+            previous step.</p></li><li><p>In the constructor of <code class="classname">AgentTransport</code>
+            call the method <code class="methodname">Agent.setTransport(AgentTransport
+            at)</code>. This lets the agent know what its transport
+            is.</p></li><li><p>When the agent is ready to go, call the method
+            <code class="methodname">Agent.init()</code> This is typically the point
+            in the code when the agent will connect to the blackboard using,
+            say, an <code class="methodname">AgentTransport.connect()</code>
+            call.</p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch04.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch04.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch04s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 4. The MICA implementation </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> The MICA type system</td></tr></table></div></body></html>

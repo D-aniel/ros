@@ -1,0 +1,12 @@
+<typedesc>
+	<mobdecl name="radio" >
+		<slot name="command" />
+		<slot name="channel" />
+		<slot name="freq" />
+	</mobdecl>
+	<mobdecl name="radio_station" >
+		<slot name="name" />
+		<slot name="nicks" />
+		<slot name="freq" />
+	</mobdecl>
+</typedesc>

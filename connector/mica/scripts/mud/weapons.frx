@@ -1,0 +1,171 @@
+<script>
+	<generic name="KNIFE">
+		<parent name="WEAPON"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>knife</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_new">
+				<code>1</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="DAGGER">
+		<parent name="KNIFE"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>dagger</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_new">
+				<code>3</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="SWORD">
+		<parent name="WEAPON"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>sword</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_new">
+				<code>5</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="SHORT_SWORD">
+		<parent name="SWORD"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>&lt;&lt; short sword &gt;&gt;</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_new">
+				<code>6</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="LONG_SWORD">
+		<parent name="SWORD"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>&lt;&lt; long sword &gt;&gt;</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_new">
+				<code>8</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="BROAD_SWORD">
+		<parent name="SWORD"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>&lt;&lt; broad sword &gt;&gt;</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_new">
+				<code>10</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="AXE">
+		<parent name="WEAPON"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>axe</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_new">
+				<code>6</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="BOW">
+		<parent name="WEAPON"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>bow</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_new">
+				<code>4</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="LONG_BOW">
+		<parent name="BOW"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>&lt;&lt; long bow &gt;&gt;</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_new">
+				<code>6</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="CROSSBOW">
+		<parent name="BOW"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>crossbow</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_new">
+				<code>6</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="CLUB">
+		<parent name="WEAPON"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>club</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_new">
+				<code>3</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="MACE">
+		<parent name="CLUB"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>mace</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_new">
+				<code>5</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="HAMMER">
+		<parent name="CLUB"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>hammer</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_new">
+				<code>8</code>
+			</daemon>
+		</facet>
+	</generic>
+</script>

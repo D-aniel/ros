@@ -1,0 +1,166 @@
+//load_module("unsw.cse.framescript.GUI");;
+
+_HELLO_ :: { hello | hi | hi there | hey | sup | hay};;
+_DRINK_ :: {drink | water | coke | lemonade | vodka | gin and tonic};;
+_ORDER_ :: {to buy | to order | get};;
+_YES_   :: {yes | yep | yeah | yay};;
+_NO_    :: {no | nope | nah | nay};;
+
+
+main ::
+	domain demo
+	trigger { * hello * } 
+	* <_HELLO_> * ==>
+	[ 
+		Hello. How are you? 
+	]
+	
+	* bye * ==>
+	[
+		Good bye.
+	|
+		See you later.
+	|
+		Bye.
+	]
+	
+	{I'm | I am }{ bad | not { good | well } } * ==>
+		[ I'm sorry to hear that. ]
+	
+	Bring me the glass ==>
+	[
+		Bringing you the glass
+	]
+	
+	* { good | fine | well } * ==>
+		[ Well, that's good to hear. ]
+			
+	* forward * ==>
+	[
+		Moving forward.
+	]
+	
+	* backward * ==>
+	[
+		Going backwards.
+	]
+	
+	* ==>
+	[
+		I don't quite understand ^0
+	]
+;;
+
+making ::
+	domain demo
+	trigger { * order * }
+	neworder ==>
+	[
+		Hi, what can I get you?
+	]
+	{* order <_DRINK_>} ==>
+	[
+		[
+			With cherry on top?
+		]
+		
+		#(STORED_MEMORY = ^2)
+	]
+	no * ==>
+	[ 
+		Making order with no ^1
+	]
+		
+	//* #defined(STORED_MEMORY) * ==>
+	//	#goto(confused, STORED_MEMORY)
+	
+
+	
+	order * ==>
+	[
+		I don't know what ^1 is. 
+		#goto(confused, conf)
+	]
+	
+	* order * ==>
+	[
+		I don't know what ^2 is. 
+		#goto(confused, conf)
+	]
+	
+;;
+
+confused ::
+	domain demo
+	trigger { confusion }
+	conf ==> 
+	[
+		What did you want to order again? 
+	]
+	* <_DRINK_> * ==>
+	[
+		I see you meant ^2. Ordering that for you right now.
+		#goto(making,neworder)
+	]
+	
+	*  ==>
+	[
+		I still don't recognise ^0
+	]
+	
+;;
+
+computers ::
+	domain demo
+	trigger { * { comput~ | universal } * }
+
+	{ * { comput~ | universal } * } ==>
+	[
+		We can talk about computers. Do you like playing with
+		computers?
+	]
+
+	* { <_YES_> | <_NO_> } * ==>
+		#goto(what_is_a_computer, init)
+	* ==>
+	[
+		in comuters right now
+	]
+;;
+
+what_is_a_computer ::
+	init ==>
+	[
+		Do you really know what a computer is?
+	]
+	
+	{ NOMOREALTS | * { <_YES_> | <_NO_> } * } ==>
+	[
+		#goto(favourites, fav)
+	]
+;;
+
+//how to save favourites or have the computer memorise
+
+favourites ::
+	domain demo
+	trigger {* favourite *}
+	* <_DRINK_> * ==> 
+	[
+		Okay, I'll remember that your favourite drink is ^2
+	]
+	
+	* <_ORDER_> my favourite * ==>
+	[
+		getFavourite()
+	]
+	
+	* ==>
+	[
+		Didn't quite catch your favourite. 
+	]
+;;
+
+
+//script_browser();;
+//frame_browser();;

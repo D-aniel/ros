@@ -1,0 +1,17 @@
+<typedesc>
+	<mobdecl name="sharedPadSession"/>
+	<mobdecl name="sharedPadObject"/>
+	<mobdecl name="sharedPadLine">
+		<parent name="sharedPadObject"/>
+	</mobdecl>
+	<mobdecl name="sharedPadText">
+		<parent name="sharedPadObject"/>
+	</mobdecl>
+	<mobdecl name="sharedPadElipse">
+		<parent name="sharedPadObject"/>
+	</mobdecl>
+	<mobdecl name="sharedPadRectangle">
+		<parent name="sharedPadObject"/>
+	</mobdecl>
+</typedesc>
+	

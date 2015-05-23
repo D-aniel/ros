@@ -1,0 +1,6 @@
+SPEECHREC ::
+	trigger { * { speech recognition } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ SPEECHREC ]);;

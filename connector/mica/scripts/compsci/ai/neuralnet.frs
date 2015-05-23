@@ -1,0 +1,6 @@
+NEURALNET ::
+	trigger { * { neural network~ | connection~ network~ } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ NEURALNET ]);;

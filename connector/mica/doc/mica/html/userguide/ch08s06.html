@@ -1,0 +1,28 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>PDARunner</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.0"><link rel="home" href="index.html" title="Mica: Users Guide"><link rel="up" href="ch08.html" title="Chapter 8. Tools"><link rel="prev" href="ch08s05.html" title="MobMaker"><link rel="next" href="ch08s07.html" title="ProxyAgent"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">PDARunner</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch08s05.html">Prev</a> </td><th width="60%" align="center">Chapter 8. Tools</th><td width="20%" align="right"> <a accesskey="n" href="ch08s07.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="pdarunner"></a>PDARunner</h2></div></div></div><div class="figure-float"><div class="figure"><a name="figure.pdarunner"></a><div class="figure-contents"><div class="mediaobject"><img src="../diagrams/pdarunner.png" alt="PDARunner Interface"></div></div><p class="title"><b>Figure 8.3. PDARunner Interface</b></p></div><br class="figure-break"></div><p>The PDARunner is a small tool for starting Mica agents on a PDA.
+			The interface for PDARunner can be seen in
+			<a class="xref" href="ch08s06.html#figure.pdarunner" title="Figure 8.3. PDARunner Interface">Figure 8.3</a>.</p><p>The top line of the interface allows the user to select the
+			blackboard the agent is to connect to. The second line allows the user to
+			select the amount of debugging information they want to see. The third line
+			is a pull down menu of currently available agents. Below this is a text area
+			which will display all debugging output the agent writes using
+			<code class="code">unsw.cse.mica.util.Debug</code>. At the very bottom of the interface is
+			the button to start the agent.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>As yet the PDARunner only supports XML over TCP transports as
+			it is not yet known whether SSL sockets are available on the PDA.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="pdarunner.config"></a>PDARunner Configuration</h3></div></div></div><div class="figure-float"><div class="figure"><a name="figure.pdaconfig"></a><div class="figure-contents"><pre class="programlisting">&lt;agent class="unsw.cse.mica.demo.PDAAgent" &gt;
+    &lt;classpath &gt;
+        &lt;pathelement url="pdaagent.jar" /&gt;
+    &lt;/classpath&gt;
+    &lt;arg param="context" value="example" /&gt;
+&lt;/agent&gt;</pre></div><p class="title"><b>Figure 8.4. Example PDARunner Configuration File</b></p></div><br class="figure-break"></div><p>An example configuration file for PDARunner is shown in
+				<a class="xref" href="ch08s06.html#figure.pdaconfig" title="Figure 8.4. Example PDARunner Configuration File">Figure 8.4</a>. The PDARunner looks in the
+				<code class="code">\My Documents\Jars\</code> folder of the PDA for its agent
+				configurations. Any file with a name like <code class="code">'agent-*.xml'</code>
+				in the folder is considered to be an agent configuration file.</p><p>The root element of the file is an <code class="code">agent</code> tag
+				which gives the class for the agent and optionally a name for the
+				agent.</p><p>When the PDARunner is started it uses a minimal classpath
+				so the agent can be given a <code class="code">classpath</code> tag to add
+				required classes to the classpath. Each new jar file or package
+				location is added using a separate <code class="code">pathelement</code> tag.
+				</p><p>If needed, the configuration file can list a series of
+				parameters using <code class="code">arg</code> tags that will be passed to the
+				agent in its <code class="code">init</code> method.</p><p>The precise format for the PDARunner configuration files
+				can be found in <code class="code">pdarunner.dtd</code>.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch08s05.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch08.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch08s07.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">MobMaker </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> ProxyAgent</td></tr></table></div></body></html>

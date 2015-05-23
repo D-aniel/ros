@@ -1,0 +1,39 @@
+init ::
+	domain demo
+	
+	init ==> #make_channels()
+;;
+
+make_channels() = (
+	var newMob;
+	newMob = new radio_station;
+	put(newMob, name, << MMM >>);
+	put(newMob, nicks, quote(<< { triple m | m m m | mmm } >>));
+	put(newMob, freq, << 104.9 FM >>);
+	mica_write_mob(newMob);
+	newMob = new radio_station;
+	put(newMob, name, << JJJ >>);
+	put(newMob, nicks, quote(<< { triple j | j j j | jjj } >>));
+	put(newMob, freq, << 105.7 FM >>);
+	mica_write_mob(newMob);
+	newMob = new radio_station;
+	put(newMob, name, << Radio National >>);
+	put(newMob, nicks, quote(<< { abc | a b c | _ } radio national >>));
+	put(newMob, freq, << 576 AM >>);
+	mica_write_mob(newMob);
+	newMob = new radio_station;
+	put(newMob, name, << ABC News >>);
+	put(newMob, nicks, quote(<< { abc | a b c | _ } news >>));
+	put(newMob, freq, << 630 AM >>);
+	mica_write_mob(newMob);
+	newMob = new radio_station;
+	put(newMob, name, << Nova >>);
+	put(newMob, nicks, quote(<< nova >>));
+	put(newMob, freq, << 96.9 >>);
+	mica_write_mob(newMob);
+	newMob = new radio_station;
+	put(newMob, name, << 2UE >>);
+	put(newMob, nicks, quote(<< 2 { ue | u e } >>));
+	put(newMob, freq, << 954 AM >>);
+	mica_write_mob(newMob);
+);;

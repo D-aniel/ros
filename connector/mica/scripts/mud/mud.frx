@@ -1,0 +1,434 @@
+<script>
+	<code>// Places</code>
+	<generic name="LOCATION">
+		<facet name="name">
+		</facet>
+		<facet name="description">
+			<daemon name="if_needed">
+				<code>&lt;&lt; You cannot see where you are it is far to dark. &gt;&gt;</code>
+			</daemon>
+		</facet>
+		<facet name="long_description">
+			<daemon name="if_needed">
+				<code>^description</code>
+			</daemon>
+		</facet>
+		<facet name="north">
+			<daemon name="range">
+				<code>LOCATION</code>
+			</daemon>
+		</facet>
+		<facet name="south">
+			<daemon name="range">
+				<code>LOCATION</code>
+			</daemon>
+		</facet>
+		<facet name="east">
+			<daemon name="range">
+				<code>LOCATION</code>
+			</daemon>
+		</facet>
+		<facet name="west">
+			<daemon name="range">
+				<code>LOCATION</code>
+			</daemon>
+		</facet>
+		<facet name="up">
+			<daemon name="range">
+				<code>LOCATION</code>
+			</daemon>
+		</facet>
+		<facet name="down">
+			<daemon name="range">
+				<code>LOCATION</code>
+			</daemon>
+		</facet>
+	</generic>
+	<code>// Characters</code>
+	<generic name="CHARACTER">
+		<facet name="name">
+			<daemon name="if_needed">
+				<code>Anonymous</code>
+			</daemon>
+		</facet>
+		<facet name="description">
+			<daemon name="if_needed">
+				<code>name</code>
+			</daemon>
+		</facet>
+		<facet name="long_description">
+			<daemon name="if_needed">
+				<code>&lt;&lt; You cannot tell much about ^name.&gt;&gt;</code>
+			</daemon>
+		</facet>
+		<facet name="inventory">
+			<multivalued value="true"/>
+			<daemon name="range">
+				<code>OBJECT</code>
+			</daemon>
+		</facet>
+		<facet name="health">
+			<cache value="true"/>
+			<daemon name="range">
+				<code>integer</code>
+			</daemon>
+			<daemon name="if_new">
+				<code>max_health</code>
+			</daemon>
+		</facet>
+		<facet name="mana">
+			<cache value="true"/>
+			<daemon name="range">
+				<code>integer</code>
+			</daemon>
+			<daemon name="if_new">
+				<code>max_mana</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<cache value="true"/>
+			<daemon name="range">
+				<code>integer</code>
+			</daemon>
+			<daemon name="if_needed">
+				<code>10</code>
+			</daemon>
+		</facet>
+		<facet name="max_mana">
+			<cache value="true"/>
+			<daemon name="range">
+				<code>integer</code>
+			</daemon>
+			<daemon name="if_needed">
+				<code>0</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>0</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>0</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="PLAYER">
+		<parent name="CHARACTER"/>
+		<facet name="weapon">
+			<daemon name="range">
+				<code>WEAPON</code>
+			</daemon>
+		</facet>
+		<facet name="helm">
+			<daemon name="range">
+				<code>HELM</code>
+			</daemon>
+		</facet>
+		<facet name="boots">
+			<daemon name="range">
+				<code>BOOTS</code>
+			</daemon>
+		</facet>
+		<facet name="pants">
+			<daemon name="range">
+				<code>PANTS</code>
+			</daemon>
+		</facet>
+		<facet name="shirt">
+			<daemon name="range">
+				<code>SHIRT</code>
+			</daemon>
+		</facet>
+		<facet name="cloak">
+			<daemon name="range">
+				<code>CLOAK</code>
+			</daemon>
+		</facet>
+		<facet name="strength">
+			<cache value="true"/>
+			<daemon name="range">
+				<code>integer</code>
+			</daemon>
+			<daemon name="if_new">
+				<code>10</code>
+			</daemon>
+		</facet>
+		<facet name="dexterity">
+			<cache value="true"/>
+			<daemon name="range">
+				<code>integer</code>
+			</daemon>
+			<daemon name="if_new">
+				<code>10</code>
+			</daemon>
+		</facet>
+		<facet name="intelligence">
+			<cache value="true"/>
+			<daemon name="range">
+				<code>integer</code>
+			</daemon>
+			<daemon name="if_new">
+				<code>10</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>if defined(weapon) then
+	strength + attack of weapon
+else
+	strength</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>var defence;
+defence = dexterity;
+if defined(helm) then
+	defence = defence + defence of helm;
+if defined(boots) then
+	defence = defence + defence of boots;
+if defined(pants) then
+	defence = defence + defence of pants;
+if defined(shirt) then
+	defence = defence + defence of shirt;
+if defined(cloak) then
+	defence = defence + defence of cloak;
+defence</code>
+			</daemon>
+		</facet>
+		<facet name="purse">
+			<cache value="true"/>
+			<daemon name="range">
+				<code>MONEY</code>
+			</daemon>
+			<daemon name="if_new">
+				<code>new MONEY</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="NPC">
+		<parent name="CHARACTER"/>
+	</generic>
+	<code>// Mosters</code>
+	<generic name="MONSTER">
+		<parent name="NPC"/>
+		<facet name="name">
+			<daemon name="if_needed">
+				<code>type</code>
+			</daemon>
+		</facet>
+		<facet name="description">
+			<daemon name="if_needed">
+				<code>if (health == 0) then
+	&lt;&lt; a dead ^type &gt;&gt;
+else
+	&lt;&lt; a ^type &gt;&gt;</code>
+			</daemon>
+		</facet>
+		<facet name="long_description">
+			<daemon name="if_needed">
+				<code>var D, H;
+if (defined(name)) then
+	D = name
+else
+	D = &lt;&lt; The ^type&gt;&gt;;
+if (health == 0) then
+	H = &lt;&lt; dead &gt;&gt;
+else if (health == max_health) then
+	H = &lt;&lt; perfectly healthy &gt;&gt;
+else if (health &gt; max_health / 2) then
+	H = &lt;&lt; a little scratched &gt;&gt;
+else
+	H = &lt;&lt; severely injured &gt;&gt;;
+&lt;&lt; ^D is ^H. &gt;&gt;</code>
+			</daemon>
+		</facet>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>monster</code>
+			</daemon>
+		</facet>
+		<facet name="inventory">
+			<cache value="true"/>
+			<daemon name="if_new">
+				<code>var i;
+i = new MONEY;
+put(i, copper, 1);
+i</code>
+			</daemon>
+		</facet>
+	</generic>
+	<code>// Objects</code>
+	<generic name="OBJECT">
+		<facet name="name">
+			<daemon name="if_needed">
+				<code>type</code>
+			</daemon>
+		</facet>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>&lt;&lt; Unknown object. &gt;&gt;</code>
+			</daemon>
+		</facet>
+		<facet name="pattern">
+			<daemon name="if_needed">
+				<code>type</code>
+			</daemon>
+		</facet>
+		<facet name="description">
+			<daemon name="if_needed">
+				<code>&lt;&lt; a ^type &gt;&gt;</code>
+			</daemon>
+		</facet>
+		<facet name="long_description">
+			<daemon name="if_needed">
+				<code>&lt;&lt; You cannot tell anything about the ^name except that you have it. &gt;&gt;</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="CONTAINER">
+		<parent name="OBJECT"/>
+		<facet name="contents">
+			<multivalued value="true"/>
+			<daemon name="range">
+				<code>OBJECT</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="SURFACE">
+		<parent name="OBJECT"/>
+		<facet name="contents">
+			<multivalued value="true"/>
+			<daemon name="range">
+				<code>OBJECT</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="MONEY">
+		<parent name="OBJECT"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>money</code>
+			</daemon>
+		</facet>
+		<facet name="pattern">
+			<daemon name="if_needed">
+				<code>quote(&lt;&lt; { money | gold | silver | copper | coins } &gt;&gt;)</code>
+			</daemon>
+		</facet>
+		<facet name="description">
+			<daemon name="if_needed">
+				<code>if gold == 0 then
+	if silver == 0 then
+		copper_description
+	else if copper == 0 then
+		silver_description
+	else
+		&lt;&lt; ^silver_description, ^copper_description &gt;&gt;
+else if  silver == 0 then
+	if copper == 0 then
+		gold_description
+	else
+		&lt;&lt; ^gold_description, ^copper_description &gt;&gt;
+else if copper == 0 then
+	&lt;&lt; ^gold_description, ^silver_description &gt;&gt;
+else
+	&lt;&lt; ^gold_description, ^silver_description, copper_description &gt;&gt;</code>
+			</daemon>
+		</facet>
+		<facet name="gold">
+			<daemon name="range">
+				<code>integer</code>
+			</daemon>
+			<daemon name="if_needed">
+				<code>0</code>
+			</daemon>
+		</facet>
+		<facet name="gold_description">
+			<daemon name="if_needed">
+				<code>if (gold == 1) then
+	&lt;&lt; 1 gold coin &gt;&gt;
+else
+	&lt;&lt; ^gold gold coins &gt;&gt;</code>
+			</daemon>
+		</facet>
+		<facet name="silver">
+			<daemon name="range">
+				<code>integer</code>
+			</daemon>
+			<daemon name="if_needed">
+				<code>0</code>
+			</daemon>
+		</facet>
+		<facet name="siver_description">
+			<daemon name="if_needed">
+				<code>if (silver == 1) then
+	&lt;&lt; 1 silver coin &gt;&gt;
+else
+	&lt;&lt; ^silver silver coins &gt;&gt;</code>
+			</daemon>
+		</facet>
+		<facet name="copper">
+			<daemon name="range">
+				<code>integer</code>
+			</daemon>
+			<daemon name="if_needed">
+				<code>0</code>
+			</daemon>
+		</facet>
+		<facet name="copper_description">
+			<daemon name="if_needed">
+				<code>if (copper == 1) then
+	&lt;&lt; 1 copper coin &gt;&gt;
+else
+	&lt;&lt; ^copper copper coins &gt;&gt;</code>
+			</daemon>
+		</facet>
+	</generic>
+	<code>// Weapons</code>
+	<generic name="WEAPON">
+		<parent name="OBJECT"/>
+		<facet name="attack">
+			<cache value="true"/>
+			<daemon name="range">
+				<code>integer</code>
+			</daemon>
+			<daemon name="if_needed">
+				<code>0</code>
+			</daemon>
+		</facet>
+	</generic>
+	<code>// Armour</code>
+	<generic name="ARMOUR">
+		<facet name="defence">
+			<cache value="true"/>
+			<daemon name="range">
+				<code>integer</code>
+			</daemon>
+			<daemon name="if_needed">
+				<code>0</code>
+			</daemon>
+		</facet>
+	</generic>
+	<code>// Food</code>
+	<generic name="FOOD">
+		<parent name="OBJECT"/>
+		<facet name="quantity">
+			<daemon name="if_needed">
+				<code>1</code>
+			</daemon>
+		</facet>
+		<facet name="health">
+			<daemon name="if_needed">
+				<code>0</code>
+			</daemon>
+		</facet>
+		<facet name="mana">
+			<daemon name="if_needed">
+				<code>0</code>
+			</daemon>
+		</facet>
+	</generic>
+</script>

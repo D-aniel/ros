@@ -1,0 +1,36 @@
+<learntask 
+	name="readOrDisplayEmail" 
+	learner="weka.classifiers.trees.j48.J48" 
+	datafile="/tmp/readordisplay.arff"
+	modelfile="/tmp/readordisplay.mdl">
+	<attribute name="location"
+					type="discrete"
+					sourcemob="envLocation"
+					sourceslot="location"	>
+		<value label="home"/>
+		<value label="office"/>
+		<value label="car"/>
+	</attribute>
+	<attribute name="noiseLevel"
+					type="continuous"
+					sourcemob="envNoise"
+					sourceslot="noiseLevel"/>
+	<attribute name="whosaround"
+					type="discrete"
+					sourcemob="envWhosAround"
+					sourceslot="whosAround"> 
+		<value label="alone"/>
+		<value label="withfriends"/>
+		<value label="withstrangers"/>
+	</attribute>
+	<attribute name="numMails"
+					type="continuous"
+					sourcemob="emailListReply"
+					sourceslot="count"/>
+	<class name="readOrDisplayEmail">
+		<value label="askuser"/>
+		<value label="readmail"/>
+		<value label="display"/>
+	</class>
+</learntask>
+		

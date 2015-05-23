@@ -1,0 +1,63 @@
+<typedesc>
+	<mobdecl name="gesture" persistence="transient">
+		<slot name="x" />
+		<slot name="y" />
+	</mobdecl>
+	<mobdecl name="click">
+		<parent name="gesture"/>
+	</mobdecl>
+	<mobdecl name="circleGesture">
+		<parent name="gesture"/>
+	</mobdecl>
+	<mobdecl name="draw" persistence="transient">
+		<slot name="colour" />
+		<slot name="fill" />
+	</mobdecl>
+	<mobdecl name="drawClean">
+		<parent name="draw"/>
+	</mobdecl>
+	<mobdecl name="drawLine">
+		<parent name="draw"/>
+		<slot name="x" />
+		<slot name="y" />
+		<slot name="x2" />
+		<slot name="y2" />
+	</mobdecl>
+	<mobdecl name="drawRect">
+		<parent name="draw"/>
+		<slot name="x" />
+		<slot name="y" />
+		<slot name="width" />
+		<slot name="height" />
+	</mobdecl>
+	<mobdecl name="drawOval">
+		<parent name="draw"/>
+		<slot name="x" />
+		<slot name="y" />
+		<slot name="width" />
+		<slot name="height" />
+	</mobdecl>
+	<mobdecl name="drawPolygon">
+		<parent name="draw"/>
+		<slot name="xPoints" />
+		<slot name="yPoints" />
+	</mobdecl>
+	<mobdecl name="drawString">
+		<parent name="draw"/>
+		<slot name="x" />
+		<slot name="y" />
+		<slot name="string" />
+	</mobdecl>
+	<mobdecl name="landmark">
+		<slot name="name" />
+		<slot name="pattern" />
+		<slot name="xPoints" />
+		<slot name="yPoints" />
+		<slot name="description" />
+	</mobdecl>
+	<mobdecl name="location" >
+		<slot name="x" />
+		<slot name="y" />
+	</mobdecl>
+</typedesc>
+	

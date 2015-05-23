@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<runner>
+
+	<host name="localhost"/>
+	
+	<port number="8500"/>
+	
+	<home dir=".." />
+	
+	<size width="800" height="500" />
+	
+	<pos x="0" y="0" />
+	
+	<java app="javaw" />
+
+	<blackboard>
+		<restore value="false" />
+	</blackboard>
+
+	<agent class="unsw.cse.mica.tools.LogDebugger">
+		<needs name="blackboard" />
+		<arg param="x" value="0" />
+		<arg param="y" value="500" />
+		<arg param="width" value="400" />
+		<arg param="height" value="400" />
+	</agent>
+	
+	<agent class="unsw.cse.mica.demo.Pingee" />
+	
+	<agent class="unsw.cse.mica.demo.Pinger" >
+		<needs name="Pingee" />
+		<needs name="LogDebugger" />
+	</agent>
+</runner>

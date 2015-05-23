@@ -1,0 +1,6 @@
+ILP ::
+	trigger { * { ilp | i l p | induct~ logic program~ } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ ILP ]);;

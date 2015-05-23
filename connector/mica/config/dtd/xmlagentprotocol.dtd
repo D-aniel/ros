@@ -1,0 +1,70 @@
+<!-- JHW 2006/11/20: This DTD is complete but has written using the code as a guide 
+     but has not been verified while MICA is running -->
+
+<!ENTITY %mob-dtd SYSTEM "mob.dtd">
+%mob-dtd;
+
+<!ELEMENT stream (agentmessage)* >
+
+<!ELEMENT agentmessage
+	(connect
+	|disconnect
+	|typemanager
+	|register
+	|unregister
+	|readmob
+	|writemob
+	|deletemob
+	|replacemob
+	|mobsearch)+
+>
+<!ATTLIST agentmessage >
+
+<!ELEMENT connect EMPTY >
+<!ATTLIST connect 
+	agentname CDATA #REQUIRED
+>
+
+<!ELEMENT disconnect EMPTY >
+<!ATTLIST disconnect >
+
+<!ELEMENT typemanager EMPTY >
+<!ATTLIST typemanager >
+
+<!ELEMENT register EMPTY>
+<!ATTLIST register
+	mobtype CDATA #REQUIRED 
+>
+
+<!ELEMENT unregister EMPTY >
+<!ATTLIST
+	mobtype CDATA #REQUIRED
+>
+
+<!ELEMENT readmob EMPTY >
+<!ATTLIST 
+	mobname CDATA #REQUIRED
+>
+
+<!ELEMENT writemob (mob) >
+<!-- JHW: mobtype is actually redundant, since it is also in the mob itself... -->
+<!ATTLIST writemob
+	mobtype CDATA #REQUIRED
+>
+
+<!ELEMENT deletemob EMPTY >
+<!ATTLIST deletemob
+	mobname CDATA #REQUIRED
+>
+
+<!ELEMENT replacemob (mob) >
+<!-- JHW: mobtype is actually redundant, since it is also in the mob itself... -->
+<!ATTLIST replacemob
+	mobname CDATA #REQUIRED
+>
+
+
+<!ELEMENT mobsearch EMPTY >
+<!ATTLIST mobsearch
+	query CDATA #REQUIRED
+>

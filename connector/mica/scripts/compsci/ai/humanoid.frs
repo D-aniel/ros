@@ -1,0 +1,6 @@
+HUMANOID ::
+	trigger { * { humanoid | android } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ HUMANOID ]);;

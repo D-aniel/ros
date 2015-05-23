@@ -1,0 +1,32 @@
+<runner>
+	
+	<host name="localhost"/>
+	
+	<port number="8500"/>
+	
+	<pos x="0" y="0" />
+	
+	<home dir=".." />
+	
+	<debug level="information"/>
+	
+	<blackboard>
+		<restore value="true" />
+		<debug level="information" />
+	</blackboard>
+	
+	<agent class="unsw.cse.mica.tools.LogDebugger" >
+	</agent>
+	
+	<agent class="unsw.cse.mica.demo.RadioAgent" >
+	</agent>
+	
+	<agent class="unsw.cse.framescript.SimpleTextAgent" name="SimpleTextAgent" >
+	</agent>
+	
+	<agent class="unsw.cse.framescript.MicaBot" >
+		<arg param="file" value="../scripts/radio.frs" />
+		<arg param="domain" value="demo"/>
+		<arg param="init" value="init"/>
+	</agent>
+</runner>

@@ -1,0 +1,6 @@
+AIBO ::
+	trigger { * { aibo | robot~ { dog | dogs } } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ AIBO ]);;

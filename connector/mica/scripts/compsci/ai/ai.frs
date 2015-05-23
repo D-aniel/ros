@@ -1,0 +1,19 @@
+load("evolprog.frs");;
+load("ilp.frs");;
+load("neuralnet.frs");;
+load("slam.frs");;
+load("speechrec.frs");;
+load("compvision.frs");;
+
+load("stumpy.frs");;
+load("aibo.frs");;
+load("caster.frs");;
+load("humanoid.frs");;
+load("mmmc.frs");;
+
+AI ::
+	trigger { * { ai | a i | artificial intelligence } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ AI ]);;

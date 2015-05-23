@@ -1,0 +1,40 @@
+<runner>
+	
+	<host name="localhost"/>
+	
+	<port number="8500"/>
+	
+	<pos x="0" y="0" />
+	
+	<home dir=".." />
+	
+	<debug level="information"/>
+	
+	<blackboard>
+		<restore value="true" />
+		<debug level="information" />
+	</blackboard>
+	
+	<agent class="unsw.cse.mica.tools.LogDebugger" >
+	</agent>
+	
+	<agent class="unsw.cse.mica.demo.MapAgent" name="Campus Map">
+	</agent>
+	
+	<!--agent class="unsw.cse.mica.tools.MobMaker">
+	</agent-->
+	
+	<!--agent class="unsw.cse.framescript.SimpleTextAgent" >
+	</agent-->
+	
+	<agent class="unsw.cse.framescript.MicaBot" >
+		<debug level="important" />
+		<needs name="SimpleTextAgent" />
+		<arg param="file" value="../scripts/campusmap.frs" />
+		<arg param="domain" value="demo"/>
+		<arg param="init" value="init"/>
+	</agent>
+	
+	<agent class="unsw.cse.mica.demo.LandmarkAgent" >
+	</agent>
+</runner>

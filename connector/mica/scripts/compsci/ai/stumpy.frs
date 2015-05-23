@@ -1,0 +1,6 @@
+STUMPY ::
+	trigger { * { stumpy } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ STUMPY ]);;

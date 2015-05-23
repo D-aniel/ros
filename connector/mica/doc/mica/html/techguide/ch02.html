@@ -1,0 +1,32 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Chapter 2. Agents</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.0"><link rel="home" href="index.html" title="Mica: Technical Guide"><link rel="up" href="index.html" title="Mica: Technical Guide"><link rel="prev" href="ch01.html" title="Chapter 1. Introduction"><link rel="next" href="ch02s02.html" title="Synchronized Communications"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 2. Agents</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch01.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch02s02.html">Next</a></td></tr></table><hr></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="agents"></a>Chapter 2. Agents</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="ch02.html#agenttransport">Transport Stack</a></span></dt><dt><span class="section"><a href="ch02s02.html">Synchronized Communications</a></span></dt></dl></div><p><span class="emphasis"><em>TODO</em></span>: ...</p><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="agenttransport"></a>Transport Stack</h2></div></div></div><div class="figure"><a name="agentActionMessage"></a><div class="figure-contents"><div class="informaltable"><table border="0"><colgroup><col><col></colgroup><tbody><tr><td>
+								<div class="mediaobject"><img src="../diagrams/AgentAction.bmp" alt="Control flow for agent actions and messages"></div>
+							</td><td>
+								<div class="mediaobject"><img src="../diagrams/AgentMessage.bmp" alt="Control flow for agent actions and messages"></div>
+							</td></tr></tbody></table></div></div><p class="title"><b>Figure 2.1. Control flow for agent actions and messages</b></p></div><br class="figure-break"><p>Agent-Blackboard communication is based on two high-level interfaces:
+			<code class="classname">AgentActions</code> and <code class="classname">AgentMessages</code>. Individually,
+			these interfaces are relatively simple. However, providing an asynchronous two-way
+			communications channel that implements these interfaces is more complex.
+			<a class="xref" href="ch02.html#agentActionMessage" title="Figure 2.1. Control flow for agent actions and messages">Figure 2.1</a> shows the steps involved in this communication process when
+			(a) executing an action and (b) handling a message from the blackboard, when using the
+			<code class="classname">XMLOverTCPBlackboard</code>.</p><p>Action execution requires the following steps:</p><div class="orderedlist"><ol type="1"><li><p>The process begins when the agents calls an action method on the transport.
+						The calling thread moves down through the protocol, generates a message, and sends
+						that message. Once control returns to the protocol class, the thread blocks and
+						waits for a reply. 
+					</p></li><li><p>
+						The protocol class has an internal thread responsible for parsing the incoming XML
+						as it arrives from the network via the TCP connection. This thread is already running
+						but remains block until a message arrives from the network.
+					</p></li><li><p>Once a complete message has arrived, the parser thread processes it.
+					</p></li><li><p>The message is an action reply, so it is stored in a location where the
+					initiating thread can access it. The initiating thread is then woken.
+					</p></li><li><p>the initiating thead is resumed. It gets the reply and passes it back to the agent
+					as the return value for the action.
+					</p></li></ol></div><p>The right-hand diagram shows the sequence of steps for the arrival of a message from the
+			blackboard. These are:</p><div class="orderedlist"><ol type="1"><li><p>The parser thread has block and is waiting for new information from the blackboard.
+				</p></li><li><p>Once a completed statement arrives, it parsed and seend to be a message.
+				</p></li><li><p>The message is passed to the protocol's other internal thread - a QueuedMessageHandler.
+				</p></li><li><p>The message handler thread repeatedly calls the agent's message functions as new
+				messages arrive. If the thread is busy when new messages arrive, they are simply added
+				to the queue and dealt with in turn. This ensures that the agent is only ever handling
+				a single message from the blackboard at any one time.
+				</p></li></ol></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch01.html">Prev</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="ch02s02.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 1. Introduction </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Synchronized Communications</td></tr></table></div></body></html>

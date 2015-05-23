@@ -1,0 +1,24 @@
+<runner>
+
+	<host name="localhost"/>
+	
+	<port number="8500"/>
+	
+	<pos x="0" y="0" />
+	
+	<home dir=".." />
+	
+	<debug level="information"/>
+	
+	<blackboard/>
+	
+	<agent class="unsw.cse.mica.tools.LogDebugger" >
+	</agent>
+	
+	<agent class="unsw.cse.mica.demo.SharedPad2" >
+	</agent>
+	
+	<agent class="unsw.cse.mica.demo.SharedPad2" >
+	</agent>
+
+</runner>

@@ -1,0 +1,13 @@
+import subprocess as subp
+
+cmd = "java -cp mica/framescript.jar unsw.cse.framescript.FrameScript mica/scripts/museum.frs mica/scripts/bot.frs".split()
+p = subp.Popen(cmd,stdin=subp.PIPE,stdout=subp.PIPE)
+#print(p.stdout.read())
+
+p.stdout.readline() #ignore Framescript init text
+p.stdin.write("Hello.")
+print(p.stdout.readline())
+p.stdin.write("Hello.")
+print(p.stdout.readline())
+p.stdin.write("Hello.")
+print(p.stdout.readline())

@@ -1,0 +1,10 @@
+BABBAGE ::
+	trigger { * { babbage | baggage } * }
+;;
+
+LOVELACE ::
+	trigger { * { lovelace | love lace } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ BABBAGE, LOVELACE ]);;

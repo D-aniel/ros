@@ -1,0 +1,23 @@
+<script>
+	<generic name="BREAD">
+		<parent name="FOOD"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>bread</code>
+			</daemon>
+		</facet>
+		<facet name="description">
+			<daemon name="if_needed">
+				<code>if quantity == 1 then
+	&lt;&lt; a loaf of bread &gt;&gt;
+else
+	&lt;&lt; ^quantity loaves of bread &gt;&gt;</code>
+			</daemon>
+		</facet>
+		<facet name="health">
+			<daemon name="if_needed">
+				<code>1</code>
+			</daemon>
+		</facet>
+	</generic>
+</script>

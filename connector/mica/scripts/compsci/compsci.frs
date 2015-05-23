@@ -1,0 +1,19 @@
+TOPICS = [];
+
+load("babbage.frs");;
+load("turing.frs");;
+
+load("ai/ai.frs");;
+load("hci.frs");;
+load("networks.frs");;
+
+load("computers.frs");;
+load("internet.frs");;
+
+MAIN ::
+	domain compsci
+	trigger { _INIT_ }
+	
+	_INIT_ ==>
+		[ Hello. Welcome to today's introduction to computer science. ]
+;;

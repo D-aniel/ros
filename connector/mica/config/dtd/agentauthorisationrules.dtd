@@ -1,0 +1,32 @@
+<!ELEMENT rules (if*)>
+<!ATTLIST rules
+	default ( accept | reject ) #IMPLIED>
+
+<!ELEMENT if ((group | type | slot | action | and | or | not), then,
+	( accept | reject | if ), (else, ( accept | reject | if ))?)>
+
+<!ELEMENT then EMPTY>
+<!ELEMENT else EMPTY>
+<!ELEMENT accept EMPTY>
+<!ELEMENT reject EMPTY>
+
+<!ELEMENT and ( group | type | slot | action | and | or | not )+>
+<!ELEMENT or ( group | type | slot | action | and | or | not )+>
+<!ELEMENT not ( group | type | slot | action | and | or | not )>
+
+<!ELEMENT group EMPTY>
+<!ATTLIST group
+	name NMTOKEN #REQUIRED>
+
+<!ELEMENT type EMPTY>
+<!ATTLIST type
+	name CDATA #REQUIRED>
+
+<!ELEMENT slot EMPTY>
+<!ATTLIST slot
+	name CDATA #REQUIRED
+	value CDATA #IMPLIED>
+	
+<!ELEMENT action EMPTY>
+<!ATTLIST action
+	type ( read | write ) #REQUIRED>

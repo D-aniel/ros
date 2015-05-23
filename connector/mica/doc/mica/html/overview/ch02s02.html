@@ -1,0 +1,42 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Putting the pieces together</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.0"><link rel="home" href="index.html" title="Mica User's Guide"><link rel="up" href="ch02.html" title="Chapter 2. The MICA Design"><link rel="prev" href="ch02.html" title="Chapter 2. The MICA Design"><link rel="next" href="ch03.html" title="Chapter 3. Installing and running MICA"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Putting the pieces together</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02.html">Prev</a> </td><th width="60%" align="center">Chapter 2. The MICA Design</th><td width="20%" align="right"> <a accesskey="n" href="ch03.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp14927360"></a>Putting the pieces together</h2></div></div></div><p>A valid question is how do all these pieces fit together. <a class="xref" href="ch02s02.html#connection" title="Figure 2.1. How MICA components are connected">Figure 2.1</a> shows what this looks like.</p><div class="figure"><a name="connection"></a><div class="figure-contents"><div class="mediaobject"><img src="../diagrams/connection.png" alt="How MICA components are connected"></div></div><p class="title"><b>Figure 2.1. How MICA components are connected</b></p></div><br class="figure-break"><p>In the <a class="xref" href="ch02s02.html#connection" title="Figure 2.1. How MICA components are connected">Figure 2.1</a>, the arrows represent
+      conduits for messages. These messages are requests that do things such
+      as request that an object be written to the blackboard, or that an agent
+      be informed that a newly created mob.</p><p>The diagram shows two agents connected to one blackboard.
+      Typically, there would be more than two agents connected, but two are
+      the minimum number for any interesting application. Agents and
+      blackboards do not communicate directly, but through a transport layer.
+      This allows implementations of MICA to use different transport layers.
+      For example, some possible transport layers are: local function calls,
+      XML over a TCP/IP connection, some proprietary encrypted protocol, or
+      ASCII messages over Bluetooth. For each one of these, a pair of classes
+      -- an agent transport and a blackboard transport -- need to be
+      developed. Agents talk to the Agent Transport layer through method
+      calls; and likewise for the Blackboard.</p><p>The advantage of doing things in this way is that it gives a lot
+      of flexibility in the domain MICA can be applied to; and allows
+      developers to write agents that do not need to be aware of the
+      underlying transport layer.</p><p>In order to clarify how requests are passed, consider what happens
+      when Agent 1 writes a mob to the blackboard, which is of type
+      <code class="classname">Message</code>. Also assume that Agent 2 has registered
+      for any mobs whose type is <code class="classname">Message</code>. Agent 1 would
+      create the mob and call an appropriate method in its agent transport.
+      The agent transport would deliver it to the blackboard transport (using
+      whatever transport medium was appropriate). The blackboard transport
+      would do two things: firstly, it would give a name to the mob; say
+      <code class="classname">Message_0</code>, and inform Agent 1 -- through Agent
+      1's transport -- of the new mob's name. Secondly, since Agent 2 was
+      registered for mobs of type <code class="classname">Message</code>, the
+      blackboard would send a message to Agent 2's transport, that there was a
+      new mob called <code class="classname">Message_0</code> with certain slots.
+      Agent 2's transport would then call a method in Agent 2 to handle the
+      newly arrived Mob.</p><p>Note the following:</p><div class="itemizedlist"><ul type="disc"><li><p>Neither Agent 1 nor Agent 2 are explicitly aware of one
+          another.</p></li><li><p>Many different agents can register for mobs of a given type.
+          There could be a dozen agents connected to the blackboard, and if
+          six of them were registered for <code class="classname">Message</code>s,
+          then all six of them would get it.</p></li><li><p>The arrows are "two way" arrows. At times the blackboard will
+          initiate communication with an agent, and at other times, it will be
+          the other way around.</p></li><li><p>Agents can register for mobs of any type, and they will be
+          informed if mobs of that type or any sub-type are written to the
+          blackboard. For example, if <code class="classname">ShortMessage</code> was
+          a subtype of <code class="classname">Message</code>, and someone wrote a mob
+          of type <code class="classname">ShortMessage</code> to the blackboard, Agent
+          2 would still be informed.</p></li></ul></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch02.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 2. The MICA Design </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 3. Installing and running MICA</td></tr></table></div></body></html>

@@ -1,0 +1,6 @@
+NETWORK ::
+	trigger { * { network~ } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ NETWORK ]);;

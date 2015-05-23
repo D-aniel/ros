@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<runner>
+
+	<host name="localhost"/>
+	
+	<port number="8500"/>
+
+	<size width="800" height="500" />
+	
+	<pos x="0" y="0" />
+	
+	<home dir=".." />
+	
+	<java app="javaw" />
+
+	<blackboard>
+		<restore value="false" />
+	</blackboard>
+
+	<agent class="unsw.cse.mica.tools.Debugger">
+		<needs name="blackboard" />
+		<arg param="x" value="0" />
+		<arg param="y" value="500" />
+		<arg param="width" value="400" />
+		<arg param="height" value="400" />
+	</agent>
+	
+	<agent class="unsw.cse.mica.tools.timer.TimerAgent">
+		<needs name="blackboard" />
+	</agent>
+	
+	<agent class="unsw.cse.mica.demo.BeepAgent">
+		<needs name="blackboard" />
+	</agent>
+	
+	<agent class="unsw.cse.framescript.SimpleTextAgent" />
+	
+	<agent class="unsw.cse.mica.demo.timeteller.TimeTellerAgent">
+		<needs name="blackboard" />
+		<needs name="TimerAgent" />
+		<needs name="BeepAgent" />
+		<needs name="SimpleTextAgent" />
+	</agent>
+	
+</runner>

@@ -1,0 +1,141 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Cast of characters</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.0"><link rel="home" href="index.html" title="Mica User's Guide"><link rel="up" href="ch06.html" title="Chapter 6. A collection of clients: the mail reading application"><link rel="prev" href="ch06.html" title="Chapter 6. A collection of clients: the mail reading application"><link rel="next" href="ch07.html" title="Chapter 7. Writing your first clients"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Cast of characters</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch06.html">Prev</a> </td><th width="60%" align="center">Chapter 6. A collection of clients: the mail reading application</th><td width="20%" align="right"> <a accesskey="n" href="ch07.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp18434448"></a>Cast of characters</h2></div></div></div><p>What agents would be involved in such an application? Well, first,
+      there's the agent that represents the WhizBang itself. For this
+      demonstration, we'll mock up the WhizBang as shown in figure <a class="xref" href="ch06s02.html#whizbang-screen" title="Figure 6.1. Screenshot of the Whizbang interface">Figure 6.1</a>.</p><div class="figure"><a name="whizbang-screen"></a><div class="figure-contents"><div class="mediaobject"><img src="../diagrams/whizbang-screen.png" alt="Screenshot of the Whizbang interface"></div></div><p class="title"><b>Figure 6.1. Screenshot of the Whizbang interface</b></p></div><br class="figure-break"><p>To "mock up" the ability to detect information like who is around,
+      we have a series of panels on the left hand side for detecting the
+      location, people who are around and the general background noise level.
+      The rest of the panel is for a speech conversation between the user and
+      WhizBang. For this demo, we'll use text.</p><p>We also make use of a bogus email retrieval agent. When queried,
+      this agent returns a list of e-mails. Currently, the number of e-mails
+      is generated randomly, and the user may receive anywhere between 0 and
+      30 e-mails.</p><p>There is also a natural language processing agent. This agent
+      "wraps around" the a C program that supports an NLP system. This agent
+      called the MicaBot Agent, is responsible for parsing what the user
+      says.</p><p>Finally, there is a learning agent that we use to learn when to
+      read e-mail and when to display it.</p><p>There are some additional agents available: one is the debugger
+      program that allows the user to see everything on the blackboard, and
+      the other is one for looking at the decision trees generated in the
+      process of learning.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="idp18439040"></a>Setting up Mobs</h3></div></div></div><p>In order to set up the system, decisions must first be made
+        about what types of mobs agents will use to communicate. First of all,
+        to communicate text to and from the user, the type declaration in
+        <a class="xref" href="ch06s02.html#text.xml" title="Figure 6.2. The type declaration for types of text used between agents.">Figure 6.2</a> is used.</p><div class="figure"><a name="text.xml"></a><div class="figure-contents"><pre class="programlisting">&lt;typedesc&gt;
+  &lt;mobdecl name="text"&gt;
+    &lt;slot name="utterance"/&gt;
+  &lt;/mobdecl&gt;
+  &lt;mobdecl name="textFromUser"&gt;
+    &lt;parent name="text"/&gt;
+  &lt;/mobdecl&gt;
+  &lt;mobdecl name="textForUser"&gt;
+    &lt;slot name="speaker"/&gt;
+    &lt;parent name="text"/&gt;
+  &lt;/mobdecl&gt;
+&lt;/typedesc&gt;</pre></div><p class="title"><b>Figure 6.2. The type declaration for types of text used between
+          agents.</b></p></div><br class="figure-break"><p>In <a class="xref" href="ch06s02.html#text.xml" title="Figure 6.2. The type declaration for types of text used between agents.">Figure 6.2</a>, three mob types are declared: a
+        generic text mob, with a single slot called "utterance" to store what
+        is being said<sup>[<a name="idp18441952" href="#ftn.idp18441952" class="footnote">3</a>]</sup>. There are two subtypes:
+        <code class="classname">textFromUser</code> and
+        <code class="classname">textForUser</code>. <code class="classname">textForUser</code>
+        has an additional slot to describe who it is who is talking.</p><p>These mobs are used to communicate between the WhizBang
+        interface and the Natural Language Processing (NLP) agent.</p><p>The WhizBang interface also uses several other mobs to describe
+        the environment; such as the <code class="classname">envNoise</code> mob to
+        describe noise levels. Every time the noise level changes, it will
+        write a new mob to the blackboard. Similarly, for the location of the
+        user, and the people around them.</p><p>The e-mail agent only listens for one mob:
+        <code class="classname">emailListRequest</code>. It then responds with an
+        emailListReply, which contains three slots:
+        <code class="methodname">count</code> -- the number of new e-mails,
+        <code class="methodname">from</code> and <code class="methodname">subject</code>.
+        The latter two are multi-valued. In this particular case, the
+        information is randomly generated.</p><p>The learning agent is rather complex. First of all, the learning
+        task is defined. This is done by way of a learning task configuration.
+        Similar to the way that new types are declared, learning tasks are
+        defined in <code class="filename">config/learntask</code>. Each file in that
+        directory is read. The configuration file for the learning agent is
+        shown in <a class="xref" href="ch06s02.html#readordisplay.xml" title="Figure 6.3. readordisplay.xml">Figure 6.3</a>.</p><div class="figure"><a name="readordisplay.xml"></a><div class="figure-contents"><pre class="programlisting">&lt;learntask
+  name="readOrDisplayEmail"
+  learner="weka.classifiers.trees.j48.J48"
+  datafile="/tmp/readordisplay.arff"
+  modelfile="/tmp/readordisplay.mdl"&gt;
+  
+  &lt;attribute name="location" type="discrete"
+        sourcemob="envLocation" sourceslot="location" &gt;
+    &lt;value label="home"/&gt;
+    &lt;value label="office"/&gt;
+    &lt;value label="car"/&gt;
+  &lt;/attribute&gt;
+
+  &lt;attribute name="noiseLevel" type="continuous"
+        sourcemob="envNoise" sourceslot="noiseLevel"/&gt;
+
+  &lt;attribute name="whosaround" type="discrete"
+        sourcemob="envWhosAround" sourceslot="whosAround"&gt;
+    &lt;value label="alone"/&gt;
+    &lt;value label="withfriends"/&gt;
+    &lt;value label="withstrangers"/&gt;
+  &lt;/attribute&gt;
+
+  &lt;attribute name="numMails" type="continuous"
+        sourcemob="emailListReply" sourceslot="count"/&gt;
+  
+  &lt;class name="readOrDisplayEmail"&gt;
+    &lt;value label="askuser"/&gt;
+    &lt;value label="readmail"/&gt;
+    &lt;value label="display"/&gt;
+  &lt;/class&gt;
+&lt;/learntask&gt;</pre></div><p class="title"><b>Figure 6.3. <code class="filename">readordisplay.xml</code></b></p></div><br class="figure-break"><p>For a given classification task (in this case
+        "readOrDisplayEmail"), we define a learning algorithm for the task as
+        well as files for temporary results to be stored. A learning task
+        consists of a set of attributes, and a final class the learner is
+        trying to classify. In this case, the possible actions are "readmail"
+        or "display". The attributes are things like the noise level, who is
+        around and how many e-mails were received. For each of these
+        attributes, the learning task extracts the value from information on
+        the blackboard. It does this by listening to any new mobs of the types
+        important for this classification task; and thus has an idea of the
+        "current" context.</p><p>Although this part is very complex, once a learning task is
+        defined, other agents can use it easily. In order to provide an
+        example to the learner; a <code class="classname">learnerTrain</code> is
+        written to the blackboard, specifying the learning task and the actual
+        class, given the current context. The learner then extracts the
+        appropriate information from the blackboard and stores the current
+        situation as an example.</p><p>In order to use the learner to decide what it should do given
+        the current context, it writes a <code class="classname">learnerTest</code>
+        mob, with the following fields: a <code class="methodname">requestId</code>,
+        so that when the learner agent replies, the other agent will know what
+        the learner agent is replying to, and secondly the learning task. The
+        learning agent then replies with a <code class="classname">learnerReply</code>
+        mob with the copied <code class="methodname">requestId</code>, the predicted
+        class and the confidence of the prediction.</p><p><a class="xref" href="ch06s02.html#whizbang-sequence" title="Figure 6.4. Sequence diagram for training the WhizBang">Figure 6.4</a> shows a sequence diagram
+        for the interactions that occur in this process.</p><div class="figure"><a name="whizbang-sequence"></a><div class="figure-contents"><div class="mediaobject"><img src="../diagrams/whizbang-sequence.png" alt="Sequence diagram for training the WhizBang"></div></div><p class="title"><b>Figure 6.4. Sequence diagram for training the WhizBang</b></p></div><br class="figure-break"><p>In <a class="xref" href="ch06s02.html#whizbang-sequence" title="Figure 6.4. Sequence diagram for training the WhizBang">Figure 6.4</a>, the blackboard is not
+        explicitly shown; rather the information flows through the blackboard
+        are shown. "Notes" are tools to aid in understanding. So, the user
+        types in "get my mail". The interface writes this as a mob to the
+        blackboard. Since the MicaBot agent (the natural language agent) has
+        registered for "textFromUser" mobs, it is informed. Similarly, the
+        learning agent is also informed when new information about environment
+        is added to the blackboard. The process continues, with the MicaBot
+        agent making a query of the email agent; and generating a text
+        description for the user.</p><p>The MicaBot agent in this case is designed to begin by eliciting
+        user preferences, and eventually to use the elicited preferences to
+        predict what the user would like. In this case, it tells the user,
+        then responds to the user's reply by providing an example to the
+        learning system using a <code class="classname">learnerTrain</code>
+        mob.</p><p>In order to run the demonstration of all of these agents
+        running, firstly kill any blackboards or other agents running (this is
+        not strictly necessary, but it helps to make sure the script will
+        run). Then in the Mica directory, type <span class="command"><strong> java
+        unsw.cse.mica.runner.MicaRunner
+        examples/run/learnemail-run.xml</strong></span>. When the "start all"
+        buttons is hit, in addition to the agents mentioned above, this will
+        open two other windows: firstly, a "MICA debugger". This application
+        is generally useful, and allows you to see all the information on the
+        blackboard. An example of the debugger is shown in <a class="xref" href="ch06s02.html#debug-screen" title="Figure 6.5. The MICA debugger">Figure 6.5</a></p><div class="figure"><a name="debug-screen"></a><div class="figure-contents"><div class="mediaobject"><img src="../diagrams/debug-screen.png" alt="The MICA debugger"></div></div><p class="title"><b>Figure 6.5. The MICA debugger</b></p></div><br class="figure-break"><p>The second window opened displays the decision tree learned in
+        the process of answering the question of whether to read or display
+        the e-mail. You should hit the "Reload" button occasionally to reload
+        the tree. It is shown in <a class="xref" href="ch06s02.html#tree-screen" title="Figure 6.6. Tree learnt from conversation with user">Figure 6.6</a>.</p><div class="figure"><a name="tree-screen"></a><div class="figure-contents"><div class="mediaobject"><img src="../diagrams/tree-screen.png" alt="Tree learnt from conversation with user"></div></div><p class="title"><b>Figure 6.6. Tree learnt from conversation with user</b></p></div><br class="figure-break"><p>The above tree shows the concept learnt after a few rounds with
+        the user. It has learnt that it should read e-mails in the car, and if
+        at home, read e-mails if there is less than 18 and display them if
+        there is more than 18.</p><p>For a closer examination, users should consider reading the
+        source code.</p></div><div class="footnotes"><br><hr width="100" align="left"><div class="footnote"><p><sup>[<a name="ftn.idp18441952" href="#idp18441952" class="para">3</a>] </sup>The current implementation of MICA will read the
+            <code class="sgmltag-element">slot</code> element of the xml document, but won't
+            actually do anything about it. It's there as a form of
+            documentation,</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch06.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch06.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch07.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 6. A collection of clients: the mail reading application </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 7. Writing your first clients</td></tr></table></div></body></html>

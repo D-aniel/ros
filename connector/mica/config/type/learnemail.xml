@@ -1,0 +1,34 @@
+<!-- type definition for "beep" mobs used by the BeepAgent class -->
+<typedesc>
+	<mobdecl name="learner" />
+	<mobdecl name="learnerTrain">
+		<parent name="learner"/>
+	</mobdecl>
+	<mobdecl name="learnerTest">
+		<parent name="learner"/>
+	</mobdecl>
+	<mobdecl name="learnerReply">
+		<parent name="learner"/>
+	</mobdecl>
+	<mobdecl name="learnerUpdated">
+		<parent name="learner"/>
+	</mobdecl>
+	<mobdecl name="env"/>
+	<mobdecl name="envWhosAround">
+		<parent name="env"/>
+	</mobdecl>
+	<mobdecl name="envNoise">
+		<parent name="env"/>
+	</mobdecl>
+	<mobdecl name="envLocation">
+		<parent name="env"/>
+	</mobdecl>
+	<mobdecl name="emailList" />
+	<mobdecl name="emailListRequest">
+		<parent name="emailList"/>
+	</mobdecl>
+	<mobdecl name="emailListReply">
+		<parent name="emailList"/>
+	</mobdecl>
+</typedesc>
+	

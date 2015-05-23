@@ -1,0 +1,70 @@
+<!-- JHW 2006/11/20: This DTD is complete but has written using the code as a guide 
+     but has not been verified while MICA is running -->
+
+<!ENTITY %mob-dtd SYSTEM "mob.dtd">
+%mob-dtd;
+
+<!ENTITY %types-dtd SYSTEM "types.dtd">
+%types-dtd;
+
+
+<!ELEMENT stream (bmessage)* >
+
+<!ELEMENT bbmessage
+	(statusreply
+	|connectreply
+	|typemanagerreply
+	|readmobreply
+	|writemobreply
+	|mobsearchreply
+	|newmob
+	|deletedmob
+	|replacedmob
+	|typemanagerchanged)+
+>
+
+<!ELEMENT statusreply EMPTY>
+<!ATTLIST statusreply
+	result CDATA #REQUIRED
+>
+<!ELEMENT connectreply EMPTY >
+<!ATTLIST connectrepy
+	agentname CDATA #REQUIRED
+>
+
+<!ELEMENT typemanagerreply (typedesc?)>
+<!ATTLIST typemanagerreply
+	result (success|failed) #REQUIRED
+>
+
+<!ELEMENT readmobreply (mob?) >
+<!ATTLIST readmobreply
+	result (success|nosuchmob) #REQUIRED
+>
+
+<!ELEMENT writemobreply EMPTY>
+<!ATTLIST writemobreply
+	mobname CDATA #REQUIRED
+>
+
+<!ELEMENT mobsearchreply (mob*) >
+<!ATTLIST mobsearchreply
+	nummobs CDATA #REQUIRED
+>
+
+<!ELEMENT newmob (mob) >
+<!ATTLIST newmob
+>
+
+<!ELEMENT replacedmob (mob,mob)>
+<!ATTLIST replacedmob
+>
+
+<!ELEMENT deletedmob (mob) >
+<!ATTLIST deletedmob
+>
+
+<!ELEMENT typemanagerchanged >
+<!ATTLIST typemanagerchanged
+>
+

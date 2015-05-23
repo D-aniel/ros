@@ -1,0 +1,17 @@
+<!-- JHW 2006/11/20: This DTD is complete but has written using the code as a guide 
+     but has not been verified while MICA is running -->
+
+<!ELEMENT mob (slot*) >
+<!ATTLIST mob
+	type CDATA #REQUIRED
+	name CDATA #IMPLIED
+	persistence ( transient | connected | permanent ) #IMPLIED
+>
+
+<!ELEMENT slot (value*) >
+<!ATTLIST slot 
+	name CDATA #REQUIRED
+>
+
+<!ELEMENT value PCDATA >
+<!ATTLIST value >

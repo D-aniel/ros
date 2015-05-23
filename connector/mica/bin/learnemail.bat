@@ -1,0 +1,1 @@
+java -cp "..\mica.jar;..\jars\hsqldb.jar;..\demos.jar;..\jars\weka.jar;..\framescript.jar" unsw.cse.mica.runner.MicaRunner ..\config\run\learnemail.xml

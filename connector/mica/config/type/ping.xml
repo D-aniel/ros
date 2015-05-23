@@ -1,0 +1,17 @@
+<!-- type definition for "beep" mobs used by the BeepAgent class -->
+<typedesc>
+	<mobdecl name="ping" persistence="transient">
+		<slot name="id" />
+		<slot name="sendTime" />
+		<slot name="receiveTime" />
+	</mobdecl>
+	
+	<mobdecl name="pingRequest">
+		<parent name="ping" />
+	</mobdecl>
+	
+	<mobdecl name="pingReply">
+		<parent name="ping" />
+	</mobdecl>
+</typedesc>
+	

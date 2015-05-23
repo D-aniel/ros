@@ -1,0 +1,12 @@
+<!ELEMENT agents (group*,agent+)>
+
+<!ELEMENT group EMPTY>
+<!ATTLIST group
+	name NMTOKEN #REQUIRED
+	groups NMTOKENS #IMPLIED>
+
+<!ELEMENT agent EMPTY>
+<!ATTLIST agent
+	name NMTOKEN #REQUIRED
+	password CDATA #IMPLIED
+	groups NMTOKENS #IMPLIED>

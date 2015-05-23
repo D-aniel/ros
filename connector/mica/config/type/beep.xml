@@ -1,0 +1,8 @@
+<!-- type definition for "beep" mobs used by the BeepAgent class -->
+<typedesc>
+	<mobdecl name="beep">
+		<slot name="duration"/>
+		<slot name="frequency"/>
+	</mobdecl>
+</typedesc>
+	

@@ -1,0 +1,124 @@
+InCA said:  Hi there. Welcome to the Mica demonstration. I'm going to try to learn stuff about you, and I'm going to make mistakes, so be tolerant.
+You said: get my mail.
+InCA said:   Just a moment while I retrieve the mail.
+InCA said:  You have 28 messages. Should I display or read your emails?
+You said: display them. 
+InCA said:   Alright, I'll display it. Anything else I can do for you?
+You said: yes get my mail. 
+InCA said:   Just a moment while I retrieve the mail.
+InCA said:  You have 12 messages. Should I display or read your emails?
+You said: read them. 
+InCA said:   Alright, I'll read it. Anything else I can do for you?
+You said: get my mail.
+InCA said:   Just a moment while I retrieve the mail.
+InCA said:  You have 9 messages. Should I display or read your emails?
+You said: read them.
+InCA said:   Alright, I'll read it. Anything else I can do for you?
+You said: get my mail.
+InCA said:   Sure. Retrieving your mail.
+InCA said:   You have 26 mails.
+InCA said:  I am reading your e-mail- please tell me if I'm wrong.
+You said: you're wrong. 
+InCA said:  Sorry, it seems I made a mistake. Should I have read or displayed your e-mail?
+You said: display. 
+InCA said:   Ok, I've noted that for future reference. Anything else I can do for you?
+You said: get my mail. 
+InCA said:   Sure. Retrieving your mail.
+InCA said:   You have 8 mails.
+InCA said:  I am reading your e-mail- please tell me if I'm wrong.
+You said: get my mail.
+InCA said:    Sure. Retrieving your mail.
+InCA said:   You have 28 mails.
+InCA said:  I am reading your e-mail- please tell me if I'm wrong.
+You said: you're wrong. 
+InCA said:  Sorry, it seems I made a mistake. Should I have read or displayed your e-mail?
+You said: display. 
+InCA said:   Ok, I've noted that for future reference. Anything else I can do for you?
+You said: get my mail.
+InCA said:   Sure. Retrieving your mail.
+InCA said:   You have 19 mails.
+InCA said:  I am displaying your e-mail- please tell me if I'm wrong.
+You said: get my mail.
+InCA said:    Sure. Retrieving your mail.
+InCA said:   You have 25 mails.
+InCA said:  I am displaying your e-mail- please tell me if I'm wrong.
+You said: no, you're right. 
+InCA said:   Hmmm, I didn't understand you.
+You said: get my mail. 
+InCA said:   Sure. Retrieving your mail.
+InCA said:   You have 25 mails.
+InCA said:  I am displaying your e-mail- please tell me if I'm wrong.
+You said: get my mail.
+InCA said:    Sure. Retrieving your mail.
+InCA said:   You have 9 mails.
+InCA said:  I am reading your e-mail- please tell me if I'm wrong.
+You said: get my mail.
+InCA said:    Sure. Retrieving your mail.
+InCA said:   You have 18 mails.
+InCA said:  I am displaying your e-mail- please tell me if I'm wrong.
+You said: wrong. 
+InCA said:  Sorry, it seems I made a mistake. Should I have read or displayed your e-mail?
+You said: read. 
+InCA said:   Ok, I've noted that for future reference. Anything else I can do for you?
+You said: get my mail.
+InCA said:   Sure. Retrieving your mail.
+InCA said:   You have 3 mails.
+InCA said:  I am reading your e-mail- please tell me if I'm wrong.
+You said: get my mail.
+InCA said:    Sure. Retrieving your mail.
+InCA said:   You have 2 mails.
+InCA said:  I am reading your e-mail- please tell me if I'm wrong.
+You said: get my mail.
+InCA said:    Sure. Retrieving your mail.
+InCA said:   You have 2 mails.
+InCA said:  I am reading your e-mail- please tell me if I'm wrong.
+You said: get my mail.
+InCA said:    Sure. Retrieving your mail.
+InCA said:   You have 24 mails.
+InCA said:  I am displaying your e-mail- please tell me if I'm wrong.
+You said: wrong. 
+InCA said:  Sorry, it seems I made a mistake. Should I have read or displayed your e-mail?
+You said: read. 
+InCA said:   Ok, I've noted that for future reference. Anything else I can do for you?
+You said: get my mail. 
+InCA said:   Sure. Retrieving your mail.
+InCA said:   You have 20 mails.
+InCA said:  I am displaying your e-mail- please tell me if I'm wrong.
+You said: read. 
+InCA said:   Hmmm, I didn't understand you.
+You said: wrong. 
+InCA said:  Hmmm, I didn't understand you.
+You said: get my mail. 
+InCA said:   Sure. Retrieving your mail.
+InCA said:   You have 11 mails.
+InCA said:  I am reading your e-mail- please tell me if I'm wrong.
+You said: get my mail. 
+InCA said:    Sure. Retrieving your mail.
+InCA said:   You have 18 mails.
+InCA said:  I am reading your e-mail- please tell me if I'm wrong.
+You said: get my mail. 
+InCA said:    Sure. Retrieving your mail.
+InCA said:   You have 25 mails.
+InCA said:  I am displaying your e-mail- please tell me if I'm wrong.
+You said: wrong. 
+InCA said:  Sorry, it seems I made a mistake. Should I have read or displayed your e-mail?
+You said: read. 
+InCA said:   Ok, I've noted that for future reference. Anything else I can do for you?
+You said: get my mail.
+InCA said:   Sure. Retrieving your mail.
+InCA said:   You have 19 mails.
+InCA said:  I am displaying your e-mail- please tell me if I'm wrong.
+You said: wrong. 
+InCA said:  Sorry, it seems I made a mistake. Should I have read or displayed your e-mail?
+You said: get my mail. 
+InCA said:  Ok, WTF?
+You said: read. 
+InCA said:   Ok, I've noted that for future reference. Anything else I can do for you?
+You said: get my mail.
+InCA said:   Sure. Retrieving your mail.
+InCA said:   You have 6 mails.
+InCA said:  I am reading your e-mail- please tell me if I'm wrong.
+You said: get my mail.
+InCA said:    Sure. Retrieving your mail.
+InCA said:   You have 20 mails.
+InCA said:  I am reading your e-mail- please tell me if I'm wrong.

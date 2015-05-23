@@ -1,0 +1,6 @@
+TURING ::
+	trigger { * { turing } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ TURING ]);;

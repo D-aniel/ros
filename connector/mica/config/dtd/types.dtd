@@ -1,0 +1,18 @@
+<!ELEMENT typedesc (mobdecl | include)+ >
+<!ELEMENT mobdecl (parent* , slot*) >
+<!ATTLIST mobdecl
+	name NMTOKEN #REQUIRED
+	persistence ( transient | connected | permanent ) #IMPLIED >
+<!ELEMENT parent EMPTY >
+<!ATTLIST parent
+	name NMTOKEN #REQUIRED>
+<!ELEMENT slot EMPTY >
+<!-- ...actually "slot" is not used yet... -->
+<!ATTLIST slot
+	name NMTOKEN #REQUIRED
+	required ( true | false ) #IMPLIED >
+<!ELEMENT include EMPTY >
+<!-- While both attributes are listed as implied it's more a case of one and only one. -->
+<!ATTLIST include
+	dir CDATA #IMPLIED
+	file CDATA #IMPLIED>

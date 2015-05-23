@@ -1,0 +1,6 @@
+INTERNET ::
+	trigger { * { internet | web } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ INTERNET ]);;

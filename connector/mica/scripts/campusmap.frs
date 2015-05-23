@@ -1,0 +1,361 @@
+//load_module("unsw.cse.framescript.GUI");;
+load_module("unsw.cse.mica.demo.MapModule");;
+
+drawClean() = (
+	var newMob;
+	newMob = new drawClean;
+	mica_write_mob(newMob)
+);;
+
+drawCircle(X, Y, R) = (
+	var newMob;
+	newMob = new drawOval;
+	put(newMob, x, X - R);
+	put(newMob, y, Y - R);
+	put(newMob, width, R * 2);
+	put(newMob, height, R * 2);
+	put(newMob, colour, gray);
+	//mica_write_mob(newMob)
+);;
+
+load_landmarks() = (
+	if [] == instances_of(landmark) then (
+		print("loading from file");
+		load("../scripts/make_landmarks.frs")
+	)
+);;
+
+show_landmark(L) = (
+	var drawLandmark;
+	if defined(xPoints of L) then (
+		drawLandmark = new drawPolygon;
+		put(drawLandmark, colour, red);
+		put(drawLandmark, xPoints, xPoints of L);
+		put(drawLandmark, yPoints, yPoints of L);
+		mica_write_mob(drawLandmark)
+	)
+);;
+
+show_all_landmarks() = (
+	forall L in instances_of(landmark) : (
+		show_landmark(L)
+	)
+);;
+
+findLandmark(X, Y) = (
+	var rval;
+	forall L in instances_of(landmark) : (
+		if (undefined(rval) and defined(xPoints of L) and
+				insidePolygon(X, Y, xPoints of L, yPoints of L)) then
+			rval = L
+	);
+	rval
+);;
+
+describeLandmark(L) = (
+	if (defined(L)) then (
+		<< That is ^(name of L). [^defined(description of L) -> ^(description of L)]
+		#show_landmark(L) >>
+	)
+);;
+
+show_path(FROM, TO) = (
+	var newMob, sumX, sumY;
+	if (defined(xPoints of FROM)) then (
+		if (defined(xPoints of TO)) then (
+			newMob = new drawLine;
+			put(newMob, colour, magenta);
+			sumX = sumY = 0;
+			forall X in xPoints of FROM:
+				sumX = sumX + X;
+			forall Y in yPoints of FROM:
+				sumY = sumY + Y;
+			put(newMob, x, as_integer(sumX / length(xPoints of FROM)));
+			put(newMob, y, as_integer(sumY / length(yPoints of FROM)));
+			sumX = sumY = 0;
+			forall X in xPoints of TO:
+				sumX = sumX + X;
+			forall Y in yPoints of TO:
+				sumY = sumY + Y;
+			put(newMob, x2, as_integer(sumX / length(xPoints of TO)));
+			put(newMob, y2, as_integer(sumY / length(yPoints of TO)));
+			#mica_write_mob(newMob)
+		) else
+			<< I don't know where ^(name of TO) is located. >>
+	) else
+		<< I don't know where ^(name of FROM) is located. >>
+);;
+
+show_path_click(FROM, TO) = (
+	var from, to;
+	from = findLandmark(x of FROM, y of FROM);
+	to = findLandmark(x of TO, y of TO);
+	if (defined(from) and defined(to)) then
+		show_path(from, to)
+	else
+		<< I'm not sure what is at the locations you selected. >>
+);;
+
+show_path_gest_mark(C, L, R) = (
+	var cLandmark;
+	cLandmark = findLandmark(x of C, y of C);
+	if (defined(cLandmark)) then (
+		if R then
+			show_path(cLandmark, L)
+		else
+			show_path(L, cLandmark)
+	) else
+		<< I don't know what's at the location you selected . >>
+);;
+
+_landmark_ ::
+--
+	var rval;
+	forall L in instances_of(landmark) : (
+		if undefined(rval) and match(as_pattern(pattern of L)) then
+			rval = L
+	);
+	rval
+;;
+
+pushClick(F, C) = (
+	replace(F, clicks, cons(C, clicks of F))
+);;
+
+clean_action(F) = (
+	replace(F, action, none);
+	replace(F, clicks, []);
+	if (defined(landmark of F)) then
+		remove(F, landmark);
+	if (defined(landmarks of F)) then
+		remove(F, landmarks)
+);;
+
+perform_action(F) = (
+	var rval, action, clicks, locMark, fMark, sumX, sumY;
+	print("performing action ", action of F, " ", length(clicks of F));
+	action = action of F;
+	clicks = clicks of F;
+	if (action == show_path_mark_mark) then (
+		rval = show_path(head(landmarks of F), head(tail(landmarks of F)));
+		clean_action(F)
+	) else if (action == show_path_gest_gest) then (
+		if (length(clicks) >= 2) then (
+			rval = show_path_click(head(tail(clicks)), head(clicks));
+			clean_action(F)
+		)
+	) else if (action == show_path_gest_gest_reverse) then (
+		if (length(clicks) >= 2) then (
+			rval = show_path_click(head(clicks), head(tail(clicks)));
+			clean_action(F)
+		)
+	) else if (action == show_path_gest_mark) then (
+		if (length(clicks) >= 1) then (
+			rval = show_path_gest_mark(head(clicks), landmark of F, false);
+			clean_action(F)
+		)
+	) else if (action == show_path_mark_gest) then (
+		if (length(clicks) >= 1) then (
+			rval = show_path_gest_mark(head(clicks), landmark of F, true);
+			clean_action(F)
+		)
+	) else if (action == show_path_loc_mark) then (
+		locMark = new landmark;
+		put(locMark, xPoints, [x of locat of F]);
+		put(locMark, yPoints, [y of locat of F]);
+		rval = show_path(locMark, landmark of F);
+		clean_action(F)
+	) else if (action == show_path_loc_gest) then (
+		if (length(clicks) >= 1) then (
+			locMark = new landmark;
+			put(locMark, xPoints, [x of locat of F]);
+			put(locMark, yPoints, [y of locat of F]);
+			fMark = findLandmark(x of head(clicks), y of head(clicks));
+			if (undefined(fMark)) then (
+				fMark = new landmark;
+				put(fMark, xPoints, [x of head(clicks)]);
+				put(fMark, yPoints, [y of head(clicks)]);
+			);
+			rval = show_path(locMark, fMark);
+			clean_action(F)
+		)
+	) else if (action == get_loc_mark) then (
+		locMark = landmark of F;
+		if (defined(xPoints of locMark)) then (
+			if (defined(yPoints of locMark)) then (
+				fMark  = new location;
+				sumX = sumY = 0;
+				forall X in xPoints of locMark:
+					sumX = sumX + X;
+				forall Y in yPoints of locMark:
+					sumY = sumY + Y;
+				put(fMark, x, as_integer(sumX / length(xPoints of locMark)));
+				put(fMark, y, as_integer(sumY / length(yPoints of locMark)));
+				mica_write_mob(fMark)
+			)
+		);
+		clean_action(F)
+	) else if (action == get_loc_gest) then (
+		if (length(clicks) >= 1) then (
+			fMark = new location;
+			put(fMark, x, x of head(clicks));
+			put(fMark, y, y of head(clicks));
+			mica_write_mob(fMark);
+			clean_action(F)
+		)
+	) else
+		rval = << I don't know the action ^(action) is. >>;
+	rval
+);;
+
+load_location(F) = (
+	var locs;
+	locs = mica_query("select * from mobs where typeOf(Mob,'location') order by getSlot1(Mob,'creationTime') desc");
+	if (length(locs) > 0) then
+		replace(F, locat, head(locs))
+);;
+
+main ::
+	domain demo
+	action: none
+	clicks: []
+	
+	init ==>
+	[
+		#mica_register("gesture")
+		#mica_register("location")
+		#load_landmarks()
+		Welcome to the mapping demonstration.
+		#load_location(current_object)
+	]
+	
+	^location ==>
+	[
+		#replace(locat, ^1)
+		#print("new location ", x of ^1, " ", y of ^1)
+	]
+	
+	^gesture ==>
+	[ ^(action of current_object == none) ->
+			^describeLandmark(findLandmark(x of ^1, y of ^1))
+	| ^(action of current_object != none) ->
+		#pushClick(current_object, ^1)
+		^perform_action(current_object)
+	]
+	
+	* show all * ==>
+		#show_all_landmarks()
+	
+	where { is | are } * <_landmark_> * ==>
+		[ ^defined(xPoints of ^3) -> #show_landmark(^3) ^(name of ^3) is here.
+		| ^undefined(xPoints of ^3) -> I don't actually know where it is. ]
+	
+	where { is | are } * ==>
+		[ I don't know the location you are talking about. ]
+	
+	how * from * <_landmark_> * to * <_landmark_> * ==>
+	[
+		#replace(action, show_path_mark_mark)
+		#replace(landmarks, [^3 ^6])
+		^perform_action(current_object)
+	]
+	
+	how * to * <_landmark_> * from * <_landmark_> * ==>
+	[
+		#replace(action, show_path_mark_mark)
+		#replace(landmarks, [^6 ^3])
+		^perform_action(current_object)
+	]
+	
+	how * from { here | there } * to { here | there } ==>
+	[
+		#replace(action, show_path_gest_gest)
+		^perform_action(current_object)
+	]
+	
+	how * { to | _ } { here | there } * from { here | there } ==>
+	[
+		#replace(action, show_path_gest_gest_reverse)
+		^perform_action(current_object)
+	]
+	
+	how * from * <_landmark_> * to { here | there } ==>
+	[
+		#replace(action, show_path_mark_gest)
+		#replace(landmark, ^3)
+		^perform_action(current_object)
+	]
+	
+	how * to * <_landmark_> * from { here | there } ==>
+	[
+		#replace(action, show_path_gest_mark)
+		#replace(landmark, ^3)
+		^perform_action(current_object)
+	]
+	
+	how * from { here | there } * to * <_landmark_> ==>
+	[
+		#replace(action, show_path_gest_mark)
+		#replace(landmark, ^5)
+		^perform_action(current_object)
+	]
+	
+	how * { to | _ }  { here | there } * from * <_landmark_> ==>
+	[
+		#replace(action, show_path_mark_gest)
+		#replace(landmark, ^6)
+		^perform_action(current_object)
+	]
+	
+	#defined(locat of current_object) how * to * <_landmark_> * ==>
+	[
+		#replace(action, show_path_loc_mark)
+		#replace(landmark, ^3)
+		^perform_action(current_object)
+	]
+	
+	#defined(locat of current_object) how * { to | _ } { here | there } * ==>
+	[
+		#replace(action, show_path_loc_gest)
+		^perform_action(current_object)
+	]
+	
+	how * from * to * ==>
+		[ I'm not sure of the places you are describing. ]
+		
+	how * to * from * ==>
+		[ I'm not sure of the places you are describing. ]
+		
+	how * to * ==>
+		[ I'm not sure where you would like to go. ]
+	
+	{ i'm | i am } * { in | at } * <_landmark_> ==>
+	[
+		#replace(action, get_loc_mark)
+		#replace(landmark, ^5)
+		^perform_action(current_object)
+	]
+	
+	{ i'm | i am } { here | there } ==>
+	[
+		#replace(action, get_loc_gest)
+		^perform_action(current_object)
+	]
+	
+	* { clean | clear } * ==>
+		#drawClean()
+	
+	NOMOREALTS ==>
+	{
+		Sorry, I don't understand.
+	|
+		I'm sorry, I didn't catch that.
+	}
+	
+	^mob ==> [ Unknown mob interaction. ^1 ]
+	
+	* ==> [ RECOGALT ]
+;;
+
+//script_browser();;
+//frame_browser();;

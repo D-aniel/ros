@@ -1,0 +1,158 @@
+<!-- MM 2006/12/7: This DTD is incomplete but was written using the code as a guide
+	-->
+<!ELEMENT runner (blackboard|agent|size|pos|termTimeout|restore|autodepend|persistent|dbPath|host|arg|java|vmarg|libPath|classpath|home|port|transport|debug|typePath|catch|restart)*>
+<!-- The host and port attributes are deprecated for runner.
+	They should be set using elements. -->
+<!ATTLIST runner
+	host CDATA #IMPLIED
+	port CDATA #IMPLIED>
+
+<!-- The size to open the runner GUI with -->
+<!ELEMENT size EMPTY>
+<!ATTLIST size
+	width CDATA #IMPLIED
+	height CDATA #IMPLIED>
+
+<!-- The position to open the runner GUI at -->
+<!ELEMENT pos EMPTY>
+<!ATTLIST pos
+	x CDATA #IMPLIED
+	y CDATA #IMPLIED>
+
+<!-- The maximum length of time to wiat for all agent to terinate-->
+<!ELEMENT termTimeout EMPTY>
+<!ATTLIST termTimeout
+	length CDATA #REQUIRED>
+
+<!-- BLACKBOARD settings -->
+<!-- blackboard informs MicaRunner it needs to start a blackboard -->
+<!ELEMENT blackboard (restore|autodepend|persistent|dbPath|java|vmarg|libPath|classpath|home|port|transport|debug|typePath|catch|restart)*>
+<!-- ignore indicates the blackboard reference is informative and should be ignored -->
+<!ATTLIST blackboard
+	ignore (true|false) #IMPLIED>
+
+<!-- The restore element is deprecated use persistent -->
+<!ELEMENT restore EMPTY>
+<!ATTLIST restore
+	value (true|false) #REQUIRED>
+
+<!-- autodepend defines whether all agents depend on the blackboard. default is true -->
+<!ELEMENT autodepend EMPTY>
+<!ATTLIST autodepend
+	value (true|false) #REQUIRED>
+
+<!-- persistent defines whether the blackboard should reload mobs from a persistent data
+	store. default is true -->
+<!ELEMENT persistent EMPTY>
+<!ATTLIST persistent
+	value (true|false) #REQUIRED>
+
+<!-- dbPath is the location of the persistent data store. default is "data/blackboard" -->
+<!ELEMENT dbPath EMPTY>
+<!ATTLIST dbPath
+	dir CDATA #REQUIRED>
+
+<!-- AGENT settings -->
+<!-- agent informs MicaRunner that in needs to start an agent -->
+<!ELEMENT agent (needs|depends|host|arg|java|vmarg|libPath|classpath|home|port|transport|debug|typePath|catch|restart)*>
+<!-- class is the Java class in which the agent is implemented.
+	name is the name the agent is to use.
+	ignore indicates the agent reference is informative and should be ignored -->
+<!ATTLIST agent
+	class CDATA #REQUIRED
+	name CDATA #IMPLIED
+	ignore (true|false) #IMPLIED>
+
+<!-- The name of another agent that the agent depends upon. "blackboard" is reserved
+	as the name for agents depending on the blackboard -->
+<!ELEMENT needs EMPTY>
+<!ATTLIST needs
+	name CDATA #REQUIRED>
+	
+<!-- a synanym for needs -->
+<!ELEMENT depends EMPTY>
+<!ATTLIST depends
+	name CDATA #REQUIRED>
+	
+<!-- the name of the host where the blackboard resides. default is localhost -->
+<!ELEMENT host EMPTY>
+<!ATTLIST host
+	name NMTOKEN #REQUIRED>
+	
+<!-- a parameter to be given to the agent in its init method -->
+<!ELEMENT arg EMPTY>
+<!-- para is the name of the parameter. value is the value -->
+<!ATTLIST arg
+	param NMTOKEN #REQUIRED
+	value CDATA #IMPLIED>
+
+<!-- PROCESS settings used by both agents and blackboards -->
+<!-- indicates a different java executable/JRE is to be used -->
+<!ELEMENT java EMPTY>
+<!-- app is the executable to be called -->
+<!ATTLIST java
+	app CDATA #IMPLIED>
+
+<!-- indicates an arguement to be passed to the jvm -->
+<!ELEMENT vmarg EMPTY>
+<!ATTLIST vmarg
+	value CDATA #REQUIRED>
+
+<!-- indicates library paths to be passed to the jvm -->
+<!ELEMENT libPath EMPTY>
+<!ATTLIST libPath
+	dir CDATA #REQUIRED>
+
+<!-- indicates library paths to be passed to the jvm -->
+<!ELEMENT classpath EMPTY>
+<!ATTLIST classpath
+	element CDATA #REQUIRED>
+
+<!-- The home directory in which the agent/blackboard should run -->
+<!ELEMENT home EMPTY>
+<!ATTLIST home
+	dir CDATA #IMPLIED>
+
+<!-- The port which the blackboard is to open its socket on -->
+<!ELEMENT port EMPTY>
+<!ATTLIST port
+	number CDATA #IMPLIED>
+
+<!-- Details which transport protocol and connection to use -->
+<!ELEMENT transport (keystore)?>
+<!ATTLIST transport
+	protocol ( xml | secure ) #IMPLIED
+	connection ( tcp | ssl ) #IMPLIED
+	password CDATA #IMPLIED >
+
+<!-- When using SSL Java looks in the keystore for the SSL certificates -->
+<!ELEMENT keystore EMPTY>
+<!ATTLIST keystore
+	location CDATA #REQUIRED
+	password CDATA #REQUIRED>
+
+<!-- The debug level to use -->
+<!ELEMENT debug EMPTY>
+<!-- The level can be given as an integer or a predefined value from
+	"emergency", "important", "information", "progress", "fn_calls", "fn_params"
+	"trace", "everything". Default for unknown values is "information". -->
+<!ATTLIST debug
+	level CDATA #IMPLIED>
+
+<!-- used to define the location of the types directory -->
+<!ELEMENT typePath EMPTY>
+<!ATTLIST typePath
+	dir CDATA #IMPLIED>
+
+<!-- appears to be deprecated.
+	indicates whether or not to catch exceptions thrown by agents etc-->
+<!ELEMENT catch EMPTY>
+<!ATTLIST catch
+	value (true|false) #IMPLIED>
+
+<!-- indicate what to do when an agent crashes. "off" says do nothing,
+	"manual" says ask the user, "auto" says restart the agent automatically.
+	default value is "manual" -->
+<!ELEMENT restart EMPTY>
+<!ATTLIST restart
+	mode (off|manual|auto) #REQUIRED>

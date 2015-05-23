@@ -1,0 +1,96 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Configuring MICA</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.0"><link rel="home" href="index.html" title="Mica User's Guide"><link rel="up" href="ch04.html" title="Chapter 4. The MICA implementation"><link rel="prev" href="ch04s04.html" title="Using the Blackboard"><link rel="next" href="ch05.html" title="Chapter 5. A simple client: SharedPad"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Configuring MICA</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch04s04.html">Prev</a> </td><th width="60%" align="center">Chapter 4. The MICA implementation</th><td width="20%" align="right"> <a accesskey="n" href="ch05.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="micaconfig"></a>Configuring MICA</h2></div></div></div><p>Agents can be configured by using the <span class="command"><strong>arg</strong></span> in
+      the XML run files. Any such tags are passed to the
+      <code class="methodname">init()</code> method through a
+      <span class="command"><strong>MicaProperties</strong></span> object. An example of a complex
+      snippet of a MicaRunner XML file that shows an agent that takes multiple
+      parameters is shown in figure <a class="xref" href="ch04s05.html#micarunner-withargs" title="Figure 4.3. A MicaRunner XML file snippet with complex arguments">Figure 4.3</a>.
+      These can be accessed through the methods of the
+      <code class="classname">MicaProperties</code> class. Note that multiple
+      parameters with different values are allowed; in this case to load
+      different files into MicaBot.</p><div class="figure"><a name="micarunner-withargs"></a><div class="figure-contents"><pre class="programlisting">&lt;agent class="unsw.cse.framescript.mica.MicaBot"&gt;
+  &lt;arg param="file" value="scripts/system_mica.frs"/&gt;
+  &lt;arg param="file" value="scripts/numbers.frs"/&gt;
+  &lt;arg param="topic" value="all"/&gt;
+  &lt;arg param="init" value="init"/&gt;
+  &lt;debug level="information"/&gt;
+&lt;/agent&gt;</pre></div><p class="title"><b>Figure 4.3. A MicaRunner XML file snippet with complex arguments</b></p></div><br class="figure-break"><p>Also note that the MicaRunner file supports a
+      <span class="command"><strong>home</strong></span> element so that you can choose the directory
+      that MICA is installed in. This is if you want to run agents in another
+      directory. The MICA home directory is used for several purposes, namely
+      to load data from <code class="filename">config/type</code> folder related to
+      types (the <span class="command"><strong>LearnerAgent</strong></span> also uses the
+      <code class="filename">config/learntask</code> folder to load learning tasks).
+      The <code class="filename">data</code> folder from the mica home directory is
+      also used to store temporary objects, like blackboard data files, or
+      learnt concepts.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="typeinfo"></a>Giving information about types</h3></div></div></div><p>The current implementation of MICA uses types that are read in
+        at the beginning of the blackboard's execution. Future versions are
+        likely to allow types and inheritance to be defined dynamically. But
+        for now, on startup, any xml files in the type directory (normally
+        <code class="filename">config/type</code>) are read in to define the hierarchy.
+        <a class="xref" href="ch04s05.html#shapes.xml" title="Figure 4.4. shapes.xml">Figure 4.4</a> shows a typical type definition file,
+        for the problem of defining a hierarchy of shapes.</p><div class="figure"><a name="shapes.xml"></a><div class="figure-contents"><pre class="programlisting">&lt;typedesc&gt; 
+  &lt;mobdecl name="object"/&gt;
+  &lt;mobdecl name="shape"&gt;
+    &lt;parent name="object"/&gt;
+  &lt;/mobdecl&gt;
+  &lt;mobdecl name="polygon"&gt;
+    &lt;parent name="shape"/&gt;
+  &lt;/mobdecl&gt;
+  &lt;mobdecl name="rectangle"&gt;
+    &lt;parent name="shape"/&gt;
+  &lt;/mobdecl&gt;
+  &lt;mobdecl name="circle"&gt;
+    &lt;parent name="shape"/&gt;
+  &lt;/mobdecl&gt;
+  &lt;mobdecl name="square"&gt;
+    &lt;parent name="rectangle"/&gt;
+    &lt;parent name="polygon"/&gt;
+  &lt;/mobdecl&gt;
+&lt;/typedesc&gt;</pre></div><p class="title"><b>Figure 4.4. <code class="filename">shapes.xml</code></b></p></div><br class="figure-break"><p>As can be seen, each type declaration consists of a description
+        of a mob, and then its parents. For example,
+        <code class="classname">circle</code> inherits from
+        <code class="classname">shape</code>, and <code class="classname">square</code>
+        inherits from both <code class="classname">rectangle</code> and
+        <code class="classname">polygon</code>. If a type is to be defined as
+        transient, simply add the attribute
+        <code class="classname">persistence="transient"</code> to the declaration. For
+        example, to make all the types in the above example transient, define
+        the object type as <code class="classname">&lt;mobdecl name="object"
+        persistence="transient" /&gt;</code>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="sect.micaql"></a>The MICA query language</h3></div></div></div><p>The MICA query system takes advantages of the storage mechanism
+        used by MICA. MICA uses HSQLDB as a database store in which it places
+        all of the MICA objects. MICA's query language takes advantage of the
+        HSQL interface. Without going in to too much detail, MICA objects
+        reside in a SQL table with three columns: the name of the object, the
+        type of the object and the object itself.</p><p>To use the MICA Query language, normal SQL has been enhanced
+        with the following functions that are applicable to mobs. They closely
+        mirror the methods that are available to the
+        <code class="classname">unsw.cse.mica.data.Mob</code> class.</p><div class="itemizedlist"><ul type="disc"><li><p><code class="methodname">typeof(mob, 'type')</code> allows you to
+              check the type of an object. This mthod returns a
+              boolean.</p></li><li><p><code class="methodname">hasslot(mob, 'slotName')</code> allows
+              you to check whether a mob has a particular slot or not.</p></li><li><p><code class="methodname">getslot1(mob, 'slotName')</code> gets
+              the first value of a slot. It returns a string. There are two
+              further versions of this method,
+              <code class="methodname">getslot1asint</code> and
+              <code class="methodname">getslot1asdbl</code> to get the first value in
+              a slot as an integer and double respectively.</p></li><li><p><code class="methodname">getslotn(mob,'slotName',pos)</code> is a
+              useful method for getting arbitrary information from a
+              multi-valued slot.</p></li><li><p><code class="methodname">contains(mob, 'slotName',
+              'value')</code> allows you to check whether a mob has a
+              particular value stored somewhere in a multi-valued slot.</p></li></ul></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="idp18404280"></a>Example uses</h4></div></div></div><p>In order to use the system, consider the following examples
+          that actually occur in the MICA codebase.</p><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="idp18404912"></a>Getting all Mobs on the blackboard</h5></div></div></div><p>To get all mobs from the blackboard, you can use:
+            </p><div class="blockquote"><blockquote class="blockquote"><p>select * from mobs</p></blockquote></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="idp18405920"></a>Getting all mobs of a particular type</h5></div></div></div><p>To get all mobs of a particular type from the blackboard
+            (including subtypes) you could use: </p><div class="blockquote"><blockquote class="blockquote"><p>select * from mobs where typeof(mob,
+                'sharedPadObject')</p></blockquote></div><p> This would retrieve all sharedPadObjects
+            (sharedPadLines, sharedPadRectangles, etc) from the
+            blackboard.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="idp18407256"></a>Selecting the order of objects</h5></div></div></div><p>To get Mobs in a particular order, you can use the "order
+            by" command, for example </p><div class="blockquote"><blockquote class="blockquote"><p>select * from mobs where typeOf(mob, 'sharedPadObject')
+                order by getSlot1(mob, 'creationTime')</p></blockquote></div><p> "asc" and "desc" could be appended to get things
+            in ascending or descending order, respectively.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="idp18408600"></a>Getting the first of a list of mobs</h5></div></div></div><p>If we wanted the most recent sharedPadObject, this could be
+            achieved as follows: </p><div class="blockquote"><blockquote class="blockquote"><p>select top 1 * from mobs where typeof(mob,
+                'sharedPadObject') order by getslot1(mob, 'creationTime')
+                desc</p></blockquote></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a name="idp18409784"></a>Finding Mobs with certain properties</h5></div></div></div><p>If we wanted to find a mob with particular properties, this
+            could be tested, for example, as follows: </p><div class="blockquote"><blockquote class="blockquote"><p>select * from mobs where contains(mob, 'creator',
+                'myAgentName')</p></blockquote></div><p> The same thing could be accomplished using
+            </p><div class="blockquote"><blockquote class="blockquote"><p>select * from mobs where getslot1(mob, 'creator') =
+                'myAgentName'</p></blockquote></div><p> (assuming, of course, that the 'creator' slot is
+            single-valued).</p></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch04s04.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch04.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Using the Blackboard </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 5. A simple client: SharedPad</td></tr></table></div></body></html>

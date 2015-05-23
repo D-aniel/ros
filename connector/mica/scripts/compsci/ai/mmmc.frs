@@ -1,0 +1,6 @@
+MMMC ::
+	trigger { * { mmmc | m m m c | 3mc | 3 m c | three m c } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ MMMC ]);;

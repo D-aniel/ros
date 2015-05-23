@@ -1,0 +1,20 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Using the Blackboard</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.0"><link rel="home" href="index.html" title="Mica User's Guide"><link rel="up" href="ch04.html" title="Chapter 4. The MICA implementation"><link rel="prev" href="ch04s03.html" title="The MICA type system"><link rel="next" href="ch04s05.html" title="Configuring MICA"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Using the Blackboard</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch04s03.html">Prev</a> </td><th width="60%" align="center">Chapter 4. The MICA implementation</th><td width="20%" align="right"> <a accesskey="n" href="ch04s05.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp18380728"></a>Using the Blackboard</h2></div></div></div><p>Agents never directly see the blackboard, but only the
+      AgentTransport. Thus, the interaction of most agents and the blackboard
+      are limited. Usually, all that the developer needs to know what to do
+      with the blackboard is to learn how to start and stop it.</p><p>The simplest way to start a blackboard is via MicaRunner. Simply
+      adding a blackboard tag to the runner XML configuration file will
+      provide support for a blackboard running on the local machine.</p><p>The alternative is to start a blackboard manually from the command
+      line. For an SQL Blackboard with a XML-over-TCP transport, this is
+      simply done using the <code class="classname">XMLOverTCPBlackboard</code>
+      class:</p><p><span class="command"><strong>% java unsw.cse.mica.blackboard.XMLOverTCPBlackboard
+      </strong></span></p><p>This starts a blackboard transport at port 8500 on the local host,
+      with all the default settings. The default settings can be overridden
+      using the following command-line parameters:</p><div class="itemizedlist"><ul type="disc"><li><p><span class="command"><strong>-port=PORT</strong></span> specifies an alterative port
+          number to use</p></li><li><p><span class="command"><strong>-micaHome=DIR</strong></span> specifies an alternative home
+          directory for mica</p></li><li><p><span class="command"><strong>-typePath=DIR</strong></span> specifies an alternative
+          directory (relative to the micaHome directory) to search for type
+          specification files</p></li><li><p><span class="command"><strong>-dbPath=DIR</strong></span> specifies an alternative
+          directory (relative to the micaHome directory) to use for the SQL
+          database</p></li><li><p><span class="command"><strong>-persistent=BOOLEAN</strong></span> specifies whether or
+          not the blackboards should attempt to load stored mobs on entry or
+          save them on exit.</p></li></ul></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch04s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch04.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch04s05.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">The MICA type system </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Configuring MICA</td></tr></table></div></body></html>

@@ -1,0 +1,42 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>The MICA type system</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.0"><link rel="home" href="index.html" title="Mica User's Guide"><link rel="up" href="ch04.html" title="Chapter 4. The MICA implementation"><link rel="prev" href="ch04s02.html" title="A quick walk through the MICA API"><link rel="next" href="ch04s04.html" title="Using the Blackboard"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">The MICA type system</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch04s02.html">Prev</a> </td><th width="60%" align="center">Chapter 4. The MICA implementation</th><td width="20%" align="right"> <a accesskey="n" href="ch04s04.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp18373968"></a>The MICA type system</h2></div></div></div><p>MICA's type system -- the way that different objects are
+      represented -- is similar to many object-oriented systems. As previously
+      discussed, objects have a type; and types can inherit from one another.
+      Each type typically has certain slots associated with it. Each slot can
+      have a list of values.</p><p>The current implementation of MICA is simple. Firstly, slots can
+      currently only have values that are Strings. Ideally, it would be useful
+      to have slots that can have other types, e.g. ints, doubles, and so
+      on<sup>[<a name="idp18375168" href="#ftn.idp18375168" class="footnote">2</a>]</sup>. Secondly, although it would be typical for a particular
+      type to have particular slots, this is not enforced in any way. For
+      example, consider the <code class="classname">sharedPadLine</code> mob in <a class="xref" href="ch04s02.html#simplemob" title="Figure 4.1. A simple mob">Figure 4.1</a>. Although we expect that a sharedPadLine would
+      have the six slots shown, it is perfectly possible to construct a
+      <code class="classname">sharedPadLine</code> that has no
+      <code class="methodname">oldX</code> slot.</p><p>MICA supports multiple inheritance: a given type can have several
+      superclasses. Unlike languages like Smalltalk where each object can have
+      multiple types, however, a single mob can only have one type; although
+      any type may have several supertypes.</p><p>To simplify management, there is a universal supertype, called
+      "mob". Every type is assumed to inherit from "mob". When an object is
+      created on the blackboard, the blackboard also creates two slots, each
+      with a single value: <code class="classname">creationTime</code>, the time at
+      which the agent was created; and <code class="classname">creator</code>, the
+      agent that created a particular mob.</p><p>It is also important to note that the registration system heeds
+      inheritance; in other words, if an agent registers for a mob of a given
+      type, the agent is informed if any subtype is also written to the
+      blackboard. This is an extremely important feature. For example, it
+      makes writing a "debugger" agent that displays everything on the
+      blackboard very easy. All the agent need do is register for any mobs
+      that are of type "mob" and it will be informed of
+      <span class="emphasis"><em>any</em></span> mob written to the blackboard. Similarly, say
+      some kind of complex agent has a whole family of mob types that it has
+      to listen to. If all the mobs inherit from a common type, then it is
+      easy to register for a whole family of mobs in a single go.</p><p>A further use of the type hierarchy is as a way of specifying
+      transience. Although individual mobs can be specified as transient by
+      the makeTransient method, it is often the case that all mobs of a
+      particular type will be transient. If a mob type is specified as
+      transient then all mobs of that type will be automaticlly made transient
+      by the blackboard. This feature also obeys type inheritance, so that if
+      some type is declared transient, all type inheriting from it will also
+      be transient.</p><p></p><div class="footnotes"><br><hr width="100" align="left"><div class="footnote"><p><sup>[<a name="ftn.idp18375168" href="#idp18375168" class="para">2</a>] </sup>One particularly useful type would be a reference to another
+          Mob. However, similar functionality can be achieved by using the
+          name of the mob and storing it in a slot as a string, and then using
+          the <code class="methodname">readMob()</code> method to find the useful
+          information.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch04s02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch04.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch04s04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">A quick walk through the MICA API </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Using the Blackboard</td></tr></table></div></body></html>

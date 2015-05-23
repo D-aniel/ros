@@ -1,0 +1,46 @@
+//load_module("unsw.cse.framescript.GUI");;
+
+_DRINK_ :: {drink | water | coke | lemonade | vodka | gin and tonic};;
+_ORDER_ :: {to buy | to order | get};;
+
+main ::
+	domain demo
+	
+	* hello * ==>
+		[ Hello. How are you? ]
+	
+	* bye * ==>
+	[
+		Good bye.
+	|
+		See you later.
+	|
+		Bye.
+	]
+	
+	{I'm | I am }{ bad | not { good | well } } * ==>
+		[ I'm sorry to hear that. ]
+	
+	* { good | fine | well } * ==>
+		[ Well, that's good to hear. ]
+	I liked <_ORDER_> * <_DRINK_> ==>
+	[ Making ^3]
+	
+
+	
+	* ==>
+	{
+		Sorry, I don't understand.
+	|
+		What do you mean by ^0.
+	}
+;;
+
+making ::
+	trigger << * order * >>
+	no * ==>
+		[ Making order with no *]
+;;
+
+//script_browser();;
+//frame_browser();;

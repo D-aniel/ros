@@ -1,0 +1,41 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Synchronized Communications</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.0"><link rel="home" href="index.html" title="Mica: Technical Guide"><link rel="up" href="ch02.html" title="Chapter 2. Agents"><link rel="prev" href="ch02.html" title="Chapter 2. Agents"><link rel="next" href="ch03.html" title="Chapter 3. Blackboard"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Synchronized Communications</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02.html">Prev</a> </td><th width="60%" align="center">Chapter 2. Agents</th><td width="20%" align="right"> <a accesskey="n" href="ch03.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="synchronized"></a>Synchronized Communications</h2></div></div></div><div class="figure"><a name="synchronizedActionMessage"></a><div class="figure-contents"><div class="informaltable"><table border="0"><colgroup><col><col></colgroup><tbody><tr><td>
+								<div class="mediaobject"><img src="../diagrams/SynchronizedAgentAction.bmp" alt="Control flow for synchronized agent actions and messages"></div>
+							</td><td>
+								<div class="mediaobject"><img src="../diagrams/SynchronizedAgentMessage.bmp" alt="Control flow for synchronized agent actions and messages"></div>
+							</td></tr></tbody></table></div></div><p class="title"><b>Figure 2.2. Control flow for synchronized agent actions and messages</b></p></div><br class="figure-break"><p>MICA also provides a capability for synchronous communication between agents. This functionality
+			is implemented as an optional additional layer on top of the asynchronous communications classes.
+			Using this functionaliy, an agent can send a mob and wait for a reply to that mob. The mobs
+			themselves are no different to any other mob. Rather, the process uses a specific slot to
+			mark the return mob as being a reply to the original mob. This slot is called "replyTo" and its
+			value is the id of the mob (or mobs) to which it is a reply. The synchronized transport layer
+			uses the value of this slot when looking for a reply.</p><p>As with the asynchronous transport, the high-level interface
+			<code class="classname">SynchronizedAgentActions</code>is quite simple. There is just one additional action
+			the agent can call. However, implementing this functionality is more complex as it involves both
+			an action and a message at the asynchronous level.</p><p> <a class="xref" href="ch02s02.html#synchronizedActionMessage" title="Figure 2.2. Control flow for synchronized agent actions and messages">Figure 2.2</a> shows the flow of control for (a) synchronized messaging
+			(b) the arrival of a normal message when a synchronized wrapper is in use. The steps involved in a
+			synchromous action are:
+			</p><div class="orderedlist"><ol type="1"><li><p>The initiating thread generates a message inside the protocol and sends it,
+					before block and waiting for a reply.</p></li><li><p>The parse thread is blocked and waiting for input</p></li><li><p>Input arrives from the blackboard</p></li><li><p>The input is parsed and found to be an action reply. The reply is stored and the
+						initiating thread notified.</p></li><li><p>The initiating thread gets the reply and returns to the synchronized layer. It 
+					then blocks(again) and waits for a reply mob to arrive.</p></li><li><p>The XML parser thread is again block and awaiting input</p></li><li><p>More input arrives from the blackboard.</p></li><li><p>This input is parsed and found to be a message. It is passed to the queued handler.</p></li><li><p>The queued handler passes the message to the synchronous handler. Here it is determined
+					that it is a reply to the mob originally sent by the initiating thread. The mob is stored as
+					a synchronous reply and the initiating thread notified.</p></li><li><p>The initiating thread grabs the reply mob and passes it back to the agent.</p></li></ol></div><p> The first five steps steps are the same as for asnychronous actions, it is only after
+			the action reply is obtained the the process varies.</p><p>The synchronous wrapper must also ensure that any normal (non-reply messages) are still
+			handled correctly. Again, the steps involved in this are similar to those for normal message
+			handling:</p><div class="orderedlist"><ol type="1"><li><p>the parser the thread is blocked and awating input.
+					</p></li><li><p>Input arrives from the blackboard.
+					</p></li><li><p>The input is found to be a message and is passed to the queued message handler.
+					</p></li><li><p>The message handler passes the message to the synchronous layer. Here it is found
+					that the message is not a reply to any sent messages, so it must be handled as a normal
+					message. It is passed to a second queued handler inside the synchronous layer.
+					</p></li><li><p>The synchronous queue handler behaves identically to the one in asynchronous layer,
+					processing one message at a time in the order they arrive.
+					</p></li></ol></div><p> Several points worth noting in this process are:</p><div class="itemizedlist"><ul type="disc"><li><p>Reply mobs are <span class="emphasis"><em>NOT</em></span> handled like normal mobs - the agent's
+					<code class="code">handleNewMob</code> functions is never called for them. </p></li><li><p>It is possible that other messages will arrive between the initial action and the
+					arrival of the reply mob. These mobs are handled like any other - they are added to the
+					queue inside the synchronous layer and handled in the order they arrive. Of course, 
+					if the initiating queue is queuedMessageHandler thread (ie. the synchronized call was
+					made from with one of the agents's message handler functions) then none of these mobs
+					will be handled until after that message handling is complete</p></li><li><p>It is possible that no reply mob arrives. The synchronous calls have a timeout parameter and it
+					is strongly recommended that be used to avoid having the thread block indefinitely while waiting for
+					a reply that may not arrive.</p></li></ul></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch02.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 2. Agents </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 3. Blackboard</td></tr></table></div></body></html>

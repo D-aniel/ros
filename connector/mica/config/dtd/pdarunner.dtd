@@ -1,0 +1,17 @@
+<!-- MM 2006/12/7: This DTD is incomplete but was written using the code as a guide
+	-->
+<!ELEMENT agent (classpath?,arg*)>
+<!ATTLIST agent
+	class CDATA #REQUIRED
+	name CDATA #IMPLIED>
+
+<!ELEMENT classpath (pathelement)+>
+
+<!ELEMENT pathelement EMPTY>
+<!ATTLIST pathelement
+	url CDATA #REQUIRED>
+	
+<!ELEMENT arg EMPTY>
+<!ATTLIST arg
+	param CDATA #REQUIRED
+	value CDATA #IMPLIED>

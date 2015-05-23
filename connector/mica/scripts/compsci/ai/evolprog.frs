@@ -1,0 +1,6 @@
+EVOLPROG ::
+	trigger { * { genetic algorithm~ | evolut~ program~ } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ EVOLPROG ]);;

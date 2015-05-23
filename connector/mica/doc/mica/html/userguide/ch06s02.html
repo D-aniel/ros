@@ -1,0 +1,31 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Configuration</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.0"><link rel="home" href="index.html" title="Mica: Users Guide"><link rel="up" href="ch06.html" title="Chapter 6. MicaRunner"><link rel="prev" href="ch06.html" title="Chapter 6. MicaRunner"><link rel="next" href="ch07.html" title="Chapter 7. Mica Security"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Configuration</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch06.html">Prev</a> </td><th width="60%" align="center">Chapter 6. MicaRunner</th><td width="20%" align="right"> <a accesskey="n" href="ch07.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="runner.config"></a>Configuration</h2></div></div></div><div class="figure-float"><div class="figure"><a name="figure.runnerconfig"></a><div class="figure-contents"><pre class="programlisting">&lt;runner&gt;
+    &lt;blackboard /&gt;
+    
+    &lt;agent class="unsw.cse.mica.tools.LogDebugger" name="AnAgent" /&gt;
+    
+    &lt;host name="www.myhost.com" /&gt;
+    &lt;port number="8500" /&gt;
+    
+    &lt;agent class="unsw.cse.mica.tools.LogDebugger" name="AnotherAgent" &gt;
+        &lt;depends name="AnAgent" /&gt;
+        &lt;arg param="x" value="600" /&gt;
+    &lt;/agent&gt;
+&lt;/runner&gt;
+				</pre></div><p class="title"><b>Figure 6.2. Example MicaRunner Configuration File</b></p></div><br class="figure-break"></div><p>MicaRunner needs to be given a configuration file for it to run.
+			A very simple configuration file is shown in
+			<a class="xref" href="ch06s02.html#figure.runnerconfig" title="Figure 6.2. Example MicaRunner Configuration File">Figure 6.2</a>. This configuration file tells
+			MicaRunner what blackboards and agents are needed.</p><p>When defining an agent it is possible to add a <code class="code">depends</code>
+			element to indicate that the agent requires another agent to be running
+			before it can be successfully be started. By default if the runner has to
+			start a blackboard all agents will be dependent upon it running.</p><p>When declaring an agent the class which implements the agent
+			needs to be specified. Optionally the name the agent is to use can also
+			be given.</p><p>It is possible to define parameters using <code class="code">arg</code> tags
+			that will be passed to an agent/blackboard in its <code class="code">init</code>
+			method.</p><p>By default agents will attempt to connect to a blackboard running
+			on the local machine and both blackboards and agents will attempt to
+			connect using port 8500. It is possible to use <code class="code">host</code> and
+			<code class="code">port</code> tags to override this default behaviour.</p><p>If all agents are connecting to a remote blackboard MicaRunner
+			is not required to start a local one.</p><p>MicaRunner processes tags in the order found in the configuration
+			file so settings will only apply to agents/blackboards declared after
+			the setting and not those declared before it.</p><p>There are many more configuration options available to MicaRunner.
+			For details look at <code class="code">runner.dtd</code>.</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch06.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch06.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch07.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 6. MicaRunner </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 7. Mica Security</td></tr></table></div></body></html>

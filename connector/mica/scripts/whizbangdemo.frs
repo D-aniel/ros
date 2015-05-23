@@ -1,0 +1,189 @@
+aff :: {yes | ok | fine | no problem | sure | whatever you say | please | Sure  | right};
+
+neg :: {no | never | not on your life | * off };
+
+greeting :: { ~i | ~day | ~ello | fellow | Fellow };
+
+//verbose(true);;
+//trace(true);;
+
+/* Declare a few MICA objects. If these are declared using the XML
+files in the config/type directory, they aren't strictly necessary
+*/
+
+learnerTrain ako mob;;
+
+learnerTest ako mob;;
+
+learnerReply ako mob;;
+
+emailListRequest ako mob;;
+
+numRequests = 0;;
+
+train(correctClass) = 
+(
+	var trainRequest; 
+	trainReq = new learnerTrain; // Haha. Very funny. TrainReq. Get it?
+	put(trainReq, task, readOrDisplayEmail);
+	put(trainReq, actualClass, correctClass);
+	mica_write_mob(trainReq)
+)
+;;
+
+test(requestIdentifier) = 
+(
+	var testRequest; 
+	testReq = new learnerTest;
+	put(testReq, task, readOrDisplayEmail);
+	put(testReq, requestId, requestIdentifier);
+	mica_write_mob(testReq)
+
+)
+;;
+
+/* Used to get the mail. */
+
+requestMail isa emailListRequest with
+	action: newMail
+;;
+
+startpoint ::
+	domain whizbang
+ 	trigger {initinit} 
+
+    initinit ==> 
+    [
+    	#mica_register("learnerReply")
+    	#mica_register("emailListReply")
+    	Hi there. Welcome to this demo of Mica, MicaBot, FrameScript
+    	and LearnerAgent. Over on the left hand side, you can see some 
+    	settings that allow you to change the environment you are in. The system will
+    	try to learn whether you prefer e-mail read out loud or displayed.
+    	(It doesn't actually display or read the e-mail, though, it just tells 
+    	you what it would do). The first three times, it won't make suggestions,
+    	but otherwise, it will ask for your assistance.  
+    	
+    ]
+    
+    init2 ==>
+    [
+    	Let's try again to see if I've learnt anything. 
+    ]
+    
+    #(numRequests >= 3) * get *  ~mail * ==> 
+    [
+		#(numRequests = numRequests + 1)
+		#goto(uselearnt, <<init>>)
+	]
+	* get * ~mail * ==> 
+	[
+		#(numRequests = numRequests + 1)
+		#goto(askuser, <<init>>)
+	]
+	ok ==> 
+	[
+		Anything else I can do for you?
+	]
+	* ==>
+	[
+			Hmmm, I didn't understand you. 
+	]
+    
+;;
+
+uselearnt :: 
+
+	predicted: none
+	
+	init ==> 
+	[
+		Sure. Retrieving your mail. 
+		#mica_write_mob(requestMail)
+	]
+	^emailListReply ==> 
+	[
+		You have ^(count of ^1) mails. 
+		#test(numRequests)
+	]
+	^learnerReply #((predictedClass of ^1) == readmail) ==> 
+	[
+		I am reading your e-mail -- please tell me if I'm wrong.
+		#replace(current_object, predicted, (predictedClass of ^1))
+	]
+	
+	^learnerReply #((predictedClass of ^1) == display) ==> 
+	[
+		I am displaying your e-mail -- please tell me if I'm wrong. 
+		#replace(current_object, predicted, (predictedClass of ^1))
+	]
+	* wrong * ==> 
+	[
+		#goto(correct, <<init>>)
+	]
+	* ==> 
+	[
+		#train(predicted)
+		#goto(startpoint,^0)
+	] 
+;;
+
+askuser :: 
+	init ==> 
+	[
+		Just a moment while I retrieve the mail. 	
+		#mica_write_mob(requestMail)	
+	]
+	^emailListReply ==> 
+	[
+		You have ^(count of ^1) mails. Should I read or display your
+		emails? 
+	]
+	* read * ==> 
+	[
+		Alright, I'll read it.
+		#train(readmail) 
+		#goto(startpoint, <<init2>>)
+	]
+	* display * ==> 
+	[
+		Alright, I'll display it. 
+		#train(display)
+		#goto(startpoint,<<init2>>)
+	]
+	* forget * ==> 
+	[
+		Sorry I couldn't help. 
+		#goto(startpoint, <<init2>>)
+	]
+	* ==> 
+	[
+		Sorry? Did you want me to read or display your e-mail, or forget it altogether? 
+	]
+;;
+
+correct :: 
+	init ==> 
+	[
+		Sorry, it seems I made a mistake. Should I have read or displayed your e-mail? 
+	]
+	* read * ==> 
+	[
+		Ok, I've noted that for future reference. 
+		#train(readmail)
+		#goto(startpoint,<<init2>>)
+	]
+	* display * ==> 
+	[
+		Ok, I've noted that for future reference. 
+		#train(display)
+		#goto(startpoint,<<init2>>)
+	]
+	* ==> 
+	[
+		Sorry, was that read or display? 
+	]
+;;
+	
+//load_module("unsw.cse.framescript.GUI");;
+//script_browser();;

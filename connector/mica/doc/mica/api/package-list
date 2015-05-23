@@ -1,0 +1,17 @@
+unsw.cse.mica
+unsw.cse.mica.agent
+unsw.cse.mica.agent.transport
+unsw.cse.mica.agent.transport.secure
+unsw.cse.mica.blackboard
+unsw.cse.mica.blackboard.secure
+unsw.cse.mica.blackboard.transport
+unsw.cse.mica.blackboard.transport.secure
+unsw.cse.mica.data
+unsw.cse.mica.runner
+unsw.cse.mica.runner.gui
+unsw.cse.mica.service
+unsw.cse.mica.sync
+unsw.cse.mica.tools
+unsw.cse.mica.tools.proxy
+unsw.cse.mica.tools.timer
+unsw.cse.mica.util

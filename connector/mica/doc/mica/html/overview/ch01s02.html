@@ -1,0 +1,69 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Comparing MICA to other systems</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.0"><link rel="home" href="index.html" title="Mica User's Guide"><link rel="up" href="ch01.html" title="Chapter 1. Introduction"><link rel="prev" href="ch01.html" title="Chapter 1. Introduction"><link rel="next" href="ch01s03.html" title="The manual"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Comparing MICA to other systems</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch01.html">Prev</a> </td><th width="60%" align="center">Chapter 1. Introduction</th><td width="20%" align="right"> <a accesskey="n" href="ch01s03.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp15764016"></a>Comparing MICA to other systems</h2></div></div></div><p>MICA can be compared with many other systems; since the problem
+      MICA addresses -- storage and communication, are two of the universal
+      problems in computer science. To help show how MICA fits in with these
+      alternatives, it is compared here with existing systems.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="idp17624448"></a>MICA as a type of database</h3></div></div></div><p>MICA can be thought of as a database, in fact, to be accurate,
+        an object-oriented active database. It is object-oriented, because
+        objects can be stored directly in the database, and active, because
+        active databases support the execution of code under certain
+        conditions when the database changes. When clients write objects to
+        the blackboard, this can be thought of as writing a record to a table
+        in a database. Similarly for reading, deleting and querying.</p><p>The important difference is the way that MICA conveys
+        information about changes to the database to interested third parties;
+        who wish to be informed about whatever changes occur to a
+        database.</p><p>There are to our knowledge, no active object-oriented databases
+        particularly ones that communicate information of changes to the
+        database.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="idp18208072"></a>MICA as a Publish/Subscribe Model</h3></div></div></div><p>Another way to think of MICA is as a publish/subscribe model of
+        interaction (like the InfoBus architecture), or an Observer pattern in
+        languages like Java or as a content-based routing system (such as
+        elvin).</p><p>The main difference between MICA and such systems is that MICA
+        integrates storage into such an architecture. Though this change seems
+        small, it does actually have some significant implications.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="idp16216312"></a>MICA as a web service and/or RMI and/or RPC</h3></div></div></div><p>The popularity of XML-based web services has increased
+        dramatically over the last few years; but really they are examples of
+        general remote procedure calls systems.</p><p>The main differences compared to MICA are that these systems are
+        "one-way" -- queries are launched by clients to the server, and the
+        client gets a response; and secondly, that there is no inherent
+        storage capability built in -- though it would be possible to build
+        one.</p><p>Having said that, it would be possible to implement MICA as a
+        two-way web service. It would be messy, but possible.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="idp16420240"></a>MICA compared to CORBA</h3></div></div></div><p>CORBA could be used to implement a MICA service; however, CORBA
+        is incredibly complex and this would be like implementing a simple
+        counter with a Pentium processor. Further, though the protocol
+        supports more advanced forms of interaction than the client-server
+        protocol mentioned above, such features are rarely implemented in
+        CORBA systems.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="idp18035584"></a>MICA as an agent architecture</h3></div></div></div><p>MICA can be considered a type of agent architecture. Compared to
+        most other agent architectures, however, it is much simpler. MICA is
+        like an agent architecture where the only elements allowed in the
+        agent communication language are objects.</p><p>Having said that, it is easy to interface non-MICA agents to
+        MICA. For comparison, we compare it to a popular agent architecture:
+        SRI's Open Agent Architecture.</p><p>In many ways, MICA is a simplified form of OAA. MICA could be
+        implemented using OAA, but it would be like trying to build a lower
+        level abstraction on a higher one -- possible, but for serious work,
+        you want a clean implementation. There are also a few other
+        differences in security and data model.</p><p>OAA has a "facilitator" agent that manages interaction between
+        different agents. In MICA, this is the blackboard manager. OAA uses
+        the idea of "solvables"-- things or queries that can be resolved. So
+        an agent in OAA says that it provides a certain solvable to the
+        facilitator. In MICA, solvables correspond pretty closely to objects.
+        In MICA, an agent tells the blackboard to inform it of particular
+        objects it is interested in.</p><p>The main differences are:</p><div class="itemizedlist"><ul type="disc"><li><p>MICA has no backtracking across agents to solve problems;
+            whereas in OAA, you can post compound goals to the facilitator,
+            which will then employ depth-first and/or breadth-first search to
+            fulfill those goals. For example, in OAA, if you tried to make an
+            enquiry like "Get me Bill Smith's manager's phone number" you
+            could say:</p><div class="figure"><a name="idp14898376"></a><div class="figure-contents"><pre class="programlisting">oaa_solve(manager("Bill Smith",M),fax(M,R))</pre></div><p class="title"><b>Figure 1.1. A typical OAA query</b></p></div><p><br class="figure-break"> (R is the return value here, and M is an
+            "intermediate" variable) The "manager" solvable might be handled
+            by one agent, and the "fax" solvable might be handled by two
+            different agents, each with access to different fax numbers.
+            Backtracking would allow this to be done seamlessly.</p></li><li><p>OAA's security model is agent-based; ie. "only the agents I
+            specify can use my solvables". MICA's is object-based, i.e. "this
+            particular object should not be visible to this agent". The
+            blackboard manager in informing agents or responding to their
+            queries, has a policy expressed as a function of the agent to
+            which the object is to be delivered and the object itself.</p></li><li><p>MICA uses object inheritance to model objects on the
+            blackboard; OAA can use any data structure supported by ICL (which
+            is basically Prolog).</p></li><li><p>OAA uses "procedural solvables" and "data solvables" -- the
+            MICA equivalent for both of these is an Object.</p></li><li><p>OAA specifies four different types of triggers: data
+            triggers (tell me fact X), communication triggers (tell me when
+            agent X talks to agent Y about Z), timed triggers (tell me every 5
+            seconds) and task triggers (tell me when someone wants to do X).
+            MICA has one trigger only: tell me when an class X or one of its
+            subclasses appears on the blackboard.</p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch01.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch01.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch01s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 1. Introduction </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> The manual</td></tr></table></div></body></html>

@@ -1,0 +1,17 @@
+<script>
+	<code>//verbose(true)</code>
+	<code>load(&quot;..\\Mica.Demos\\scripts\\mud\\mud.frs&quot;)</code>
+	<code>load(&quot;..\\Mica.Demos\\scripts\\mud\\weapons.frs&quot;)</code>
+	<code>load(&quot;..\\Mica.Demos\\scripts\\mud\\armour.frs&quot;)</code>
+	<code>load(&quot;..\\Mica.Demos\\scripts\\mud\\food.frs&quot;)</code>
+	<code>load(&quot;..\\Mica.Demos\\scripts\\mud\\monsters.frs&quot;)</code>
+	<code>load(&quot;..\\Mica.Demos\\scripts\\mud\\commands.frs&quot;)</code>
+	<code>load(&quot;..\\Mica.Demos\\scripts\\mud\\map.frs&quot;)</code>
+	<instance name="user">
+		<parent name="PLAYER"/>
+	</instance>
+	<code>location = road1</code>
+	<code>start() =
+	bot(GAME, &lt;&lt; _INIT_ &gt;&gt;)
+;;</code>
+</script>

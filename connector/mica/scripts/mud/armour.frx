@@ -1,0 +1,42 @@
+<script>
+	<generic name="HELM">
+		<parent name="ARMOUR"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>helm</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="BOOTS">
+		<parent name="ARMOUR"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>boots</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="PANTS">
+		<parent name="ARMOUR"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>pants</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="SHIRT">
+		<parent name="ARMOUR"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>shirt</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="CLOAK">
+		<parent name="ARMOUR"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>cloak</code>
+			</daemon>
+		</facet>
+	</generic>
+</script>

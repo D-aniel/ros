@@ -1,0 +1,93 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Secure XML Protocol</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.0"><link rel="home" href="index.html" title="Mica: Users Guide"><link rel="up" href="ch07.html" title="Chapter 7. Mica Security"><link rel="prev" href="ch07.html" title="Chapter 7. Mica Security"><link rel="next" href="ch08.html" title="Chapter 8. Tools"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Secure XML Protocol</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch07.html">Prev</a> </td><th width="60%" align="center">Chapter 7. Mica Security</th><td width="20%" align="right"> <a accesskey="n" href="ch08.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="securexml"></a>Secure XML Protocol</h2></div></div></div><p>The secure XML protocol is an extension of the XML that can be used
+			to restrict the mobs that an agent can see or write. It can also be used
+			to prevent unauthorised agents from connecting to the blackboard.</p><p>On the agent side of the secure XML protocol there is little change
+			to the XML protocol. The only change is that the secure protocol allows
+			the optional setting of a password that will be sent along with the
+			agent's name when connecting to the blackboard.</p><p>Virtually all security in the secure XML protocol is handled in
+			the blackboard's transport layer. This is done by adding a security
+			manager to the blackboard's transport protocol. This security manager
+			is responsible for deciding whether an agent will be allowed to connect
+			and what it can and cannot do with the mobs on the blackboard.</p><p>A very simple static security manager has been implemented in
+			<code class="code">unsw.cse.mica.blackboard.secure.SimpleBlackboardSecurityManager</code>.
+			When using MicaRunner this is the security manger used. This security
+			manager will look in the <code class="code">config/security</code> dirctory of
+			<code class="code">Mica.Home</code> for its configuration files.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="securexml.agents"></a>Verifying Agents</h3></div></div></div><div class="figure-float"><div class="figure"><a name="figure.securityverification"></a><div class="figure-contents"><pre class="programlisting">&lt;agents&gt;
+    &lt;group name="Writer" /&gt;
+    &lt;group name="Reader" /&gt;
+    &lt;group name="Guest" groups="Reader" /&gt;
+    &lt;agent name="AnAgent" password="123456" groups="Writer Reader"/&gt;
+    &lt;agent name="AnotherAgent" groups="Guest"/&gt;
+&lt;/agents&gt;
+					</pre></div><p class="title"><b>Figure 7.1. Example Agent Verification File</b></p></div><br class="figure-break"></div><p>The <code class="code">SimpleBlackboardSecurityManager</code> will look in
+				the file <code class="code">agents.xml</code> for information on allowed agents and
+				the groups to which they belong. Groups can be defined in a hierarchy
+				if desired. <a class="xref" href="ch07s02.html#figure.securityverification" title="Figure 7.1. Example Agent Verification File">Figure 7.1</a> shows
+				an example configuration file with 3 groups and 2 agents.</p><p>When an agent is declared with a password all agents attempting
+				to connect using that name must provide the required password. If
+				no password is given then any agent trying to use that name with a
+				password will be refused connection.</p><p>Agents can belong too multiple groups and groups can inherit
+				from multiple groups. To do so add a <code class="code">groups</code> attribute
+				to the tag and a space(' ') separated list of groups.</p><p>The format for the agent verification file is given in
+				<code class="code">agentauthorisationrules.dtd</code>.</p><p>When using MicaRunner the password for an agent to use can be
+				set by adding a <code class="code">transport</code> tag to the agent and setting
+				the <code class="code">password</code> attribute. This will look like this:</p><div class="blockquote"><blockquote class="blockquote"><pre class="programlisting">&lt;agent class="MyAgent" &gt;
+    &lt;transport password="123456" /&gt;
+&lt;/agent&gt;</pre></blockquote></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="securexml.rules"></a>Restricting Agent Actions</h3></div></div></div><p><code class="code">SimpleBlackboardSecurityManager</code> will look in the
+				<code class="code">rules.xml</code> configuration file for the rules it uses to
+				determine what an agent can and cannot do. An example rules file
+				is shown in <a class="xref" href="ch07s02.html#figure.securityrules" title="Figure 7.2. Example Agent Rights File">Figure 7.2</a>.</p><p>In the <code class="code">rules</code> it is possible to set whether the
+				default is to accept or reject an action. If no default is given the
+				default is to accept.</p><p>The rules are a list of <code class="code">if</code> elements that say
+				whether to accept or reject the action. Each <code class="code">if</code> element
+				has a condition followed by a <code class="code">then</code> tag and an action. It
+				may also have an <code class="code">else</code> tag and alternate action for when
+				the condition is false. The action can be to accept or reject or
+				another conditional <code class="code">if</code> statement.</p><div class="figure-float"><div class="figure"><a name="figure.securityrules"></a><div class="figure-contents"><pre class="programlisting">&lt;rules default="reject"&gt;
+    &lt;if&gt;
+        &lt;and&gt;
+            &lt;action type="write"/&gt;
+            &lt;group name="Writer" /&gt;
+        &lt;/and&gt;
+    &lt;then /&gt;
+        &lt;accept/&gt;
+    &lt;/if&gt;
+    &lt;if&gt;
+        &lt;and&gt;
+            &lt;action type="read" /&gt;
+            &lt;group name="Reader" /&gt;
+        &lt;/and&gt;
+    &lt;then /&gt;
+        &lt;if&gt;
+            &lt;and&gt;
+                &lt;group name="Guest" /&gt;
+                &lt;or&gt;
+                    &lt;type name="classified" /&gt;
+                    &lt;slot name="classified" /&gt;
+                &lt;/or&gt;
+            &lt;/and&gt;
+        &lt;then /&gt;
+            &lt;reject /&gt;
+        &lt;else /&gt;
+            &lt;accept /&gt;
+        &lt;/if&gt;
+    &lt;/if&gt;
+&lt;/rules&gt;
+					</pre></div><p class="title"><b>Figure 7.2. Example Agent Rights File</b></p></div><br class="figure-break"></div><p>There are a number of conditions that can be used the determine
+				whether or not to accept an action. Available conditions include:
+				</p><div class="variablelist"><dl><dt><span class="term"><code class="code">action</code></span></dt><dd><p>test if the agent is trying to read or write
+						the mob</p></dd><dt><span class="term"><code class="code">group</code></span></dt><dd><p>test if the agent belogs to the given group
+						</p></dd><dt><span class="term"><code class="code">type</code></span></dt><dd><p>test if the mob is of a given type
+						</p></dd><dt><span class="term"><code class="code">slot</code></span></dt><dd><p>test if the mob has a slot, can also be used
+						to check if a slot has a specific value</p></dd><dt><span class="term"><code class="code">and</code></span></dt><dd><p>groups a set of conditions that must all hold
+						true</p></dd><dt><span class="term"><code class="code">or</code></span></dt><dd><p>groups a set of conditions of which at least
+						one must be true</p></dd><dt><span class="term"><code class="code">not</code></span></dt><dd><p>tests that a condition is false
+						</p></dd></dl></div><p>Each rule will be processed in order until a designation
+				to accept or reject is found. If all rules are tried and no
+				designation is made the default action to accept or reject will be
+				used.</p><p>The XML format for the rule configuration file is given in
+				<code class="code">agentauthorisationrules.dtd</code>.</p><p>If an agent is allowed to read a mob it will recieve all
+				<code class="code">handleNewMob</code>, <code class="code">handleDeletedMob</code>,
+				<code class="code">handleReplacedMob</code> events associated with it. It will also
+				be able to see the mob using the <code class="code">readMob</code> and
+				<code class="code">mobSearch</code> functions. The ability to write a mob includes
+				writing the mob, deleting the mob and replacing it.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch07.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch07.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch08.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 7. Mica Security </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 8. Tools</td></tr></table></div></body></html>

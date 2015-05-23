@@ -1,0 +1,57 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>A more detailed look</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.0"><link rel="home" href="index.html" title="Mica User's Guide"><link rel="up" href="ch03.html" title="Chapter 3. Installing and running MICA"><link rel="prev" href="ch03s03.html" title="Installing MICA"><link rel="next" href="ch04.html" title="Chapter 4. The MICA implementation"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">A more detailed look</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s03.html">Prev</a> </td><th width="60%" align="center">Chapter 3. Installing and running MICA</th><td width="20%" align="right"> <a accesskey="n" href="ch04.html">Next</a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp18319552"></a>A more detailed look</h2></div></div></div><p>Let's have a look at
+      <code class="filename"><code class="filename">sharedpad-run.xml</code></code> in a little
+      more detail:</p><div class="figure"><a name="sharedpad-run.xml"></a><div class="figure-contents"><pre class="programlisting">&lt;runner&gt;
+
+  &lt;host name="localhost"/&gt;
+  &lt;port number="8500"/&gt;
+  &lt;pos x="0" y="0" /&gt;
+  &lt;size width="800" height="500" /&gt;
+  &lt;catch value="false" /&gt;
+
+  &lt;blackboard/&gt;
+
+  &lt;agent class="unsw.cse.mica.tools.Debugger"&gt;
+    &lt;needs name="blackboard"/&gt;
+    &lt;arg param="scroll" value="true" /&gt;
+    &lt;arg param="x" value="0" /&gt;
+    &lt;arg param="y" value="500" /&gt;
+    &lt;arg param="width" value="500" /&gt;
+    &lt;arg param="height" value="400" /&gt;
+  &lt;/agent&gt;
+
+  &lt;agent class="unsw.cse.mica.demo.SharedPad" name="Pad1"&gt;
+    &lt;needs name="blackboard"/&gt;
+  &lt;/agent&gt;
+
+  &lt;agent class="unsw.cse.mica.demo.SharedPad" name="Pad2"&gt;
+    &lt;needs name="blackboard"/&gt;
+  &lt;/agent&gt;
+
+  &lt;agent class="unsw.cse.mica.tools.MobMaker2"&gt;
+    &lt;needs name="blackboard"/&gt;
+    &lt;arg param="x" value="500" /&gt;
+    &lt;arg param="y" value="500" /&gt;
+    &lt;arg param="width" value="300" /&gt;
+    &lt;arg param="height" value="400" /&gt;
+  &lt;/agent&gt;
+&lt;/runner&gt;</pre></div><p class="title"><b>Figure 3.2. <code class="filename">sharedpad-run.xml</code></b></p></div><br class="figure-break"><p>The first line of <a class="xref" href="ch03s04.html#sharedpad-run.xml" title="Figure 3.2. sharedpad-run.xml">Figure 3.2</a> declares
+      that the file is a runner file. the next two lines specify the
+      particular blackboard to connect to, in this case the current machine
+      running on port 8500. Specifications are also be given for the location
+      for the position of the runner window, using the . This is followed by
+      the specification of the blackboard. In this particular case, the
+      blackboard does not try to restore the information on the blackboard
+      from the last time it ran, and it also specifies the amount of debugging
+      information that is given.</p><p>The others are entries for individual agents. The first is for the
+      debugger tool (that allows you to see what's on the blackboard). The
+      second and third are two instances of the SharedPad.</p><p>The Shared Pads need not run on the same computer as the
+      blackboard. If you had two computers and installed MICA on both, then
+      you could have Shared Pads running on different machines, with a
+      slightly different version of the <code class="filename">sharedpad-run.xml</code>
+      file (i.e., without the <span class="command"><strong>blackboard</strong></span> tag, and with a
+      <span class="command"><strong>runner</strong></span> tag that pointed to the appropriate remote
+      blackboard). Nor are you limited to only two, you could have as many
+      shared pads as you liked.</p><p>More documentation on MicaRunner can be found in the API
+      documentation, and more examples of the kinds of things that go in a run
+      file can be seen in the <code class="filename">examples/run</code> folder of the
+      mica distribution.</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s03.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="ch03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Installing MICA </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 4. The MICA implementation</td></tr></table></div></body></html>

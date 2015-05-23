@@ -1,0 +1,386 @@
+<script>
+	<generic name="HUMAN">
+		<parent name="MONSTER"/>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>10</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>10</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>10</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="THIEF">
+		<parent name="HUMAN"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>thief</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>15</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="BANDIT">
+		<parent name="HUMAN"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>bandit</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>15</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>16</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>20</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="BRIGAND">
+		<parent name="HUMAN"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>brigand</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>20</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>25</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>30</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="HUMANOID">
+		<parent name="MONSTER"/>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>5</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>5</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="GOBLIN">
+		<parent name="HUMANOID"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>goblin</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>8</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="ORC">
+		<parent name="HUMANOID"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>orc</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>10</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>10</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>15</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="TROLL">
+		<parent name="HUMANOID"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>troll</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>15</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>14</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>25</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="OGRE">
+		<parent name="HUMANOID"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>ogre</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>22</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>24</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>40</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="SPIDER">
+		<parent name="MONSTER"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>spider</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>1</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>2</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>5</code>
+			</daemon>
+		</facet>
+		<facet name="inventory">
+			<daemon name="if_new">
+				<code>new CLUB</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="SNAKE">
+		<parent name="MONSTER"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>snake</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>3</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>2</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>8</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="WOLF">
+		<parent name="MONSTER"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>wolf</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>5</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>6</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>15</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="BEAR">
+		<parent name="MONSTER"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>bear</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>12</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>12</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>35</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="LION">
+		<parent name="MONSTER"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>lion</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>15</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>12</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>30</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="DRAGON">
+		<parent name="MONSTER"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>dragon</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>35</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>45</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>100</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="SKELETON">
+		<parent name="HUMANOID"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>skeleton</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>7</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>9</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>6</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="ZOMBIE">
+		<parent name="HUMANOID"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>zombie</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>10</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>13</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>12</code>
+			</daemon>
+		</facet>
+	</generic>
+	<generic name="VAMPIRE">
+		<parent name="HUMANOID"/>
+		<facet name="type">
+			<daemon name="if_needed">
+				<code>vampire</code>
+			</daemon>
+		</facet>
+		<facet name="attack">
+			<daemon name="if_needed">
+				<code>25</code>
+			</daemon>
+		</facet>
+		<facet name="defence">
+			<daemon name="if_needed">
+				<code>20</code>
+			</daemon>
+		</facet>
+		<facet name="max_health">
+			<daemon name="if_needed">
+				<code>30</code>
+			</daemon>
+		</facet>
+	</generic>
+</script>

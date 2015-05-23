@@ -1,0 +1,260 @@
+<script>
+	<domain name="GAME">
+		<topic name="START_GAME"/>
+		<init value="INIT"/>
+	</domain>
+	<code>// General action synonyms</code>
+	<context name="GO">
+		<rule name="{ GO | WALK | MOVE | TRAVEL }">
+			<response></response>
+		</rule>
+	</context>
+	<context name="DIRECTION">
+		<rule name="{ NORTH | SOUTH | EAST | WEST | UP | DOWN }">
+			<response></response>
+		</rule>
+	</context>
+	<context name="LOOK">
+		<rule name="{ look { at | _ } | examine }">
+			<response></response>
+		</rule>
+	</context>
+	<context name="ATTACK">
+		<rule name="{ attack | fight | kill | hit }">
+			<response></response>
+		</rule>
+	</context>
+	<context name="TAKE">
+		<rule name="{ take | get | pick up }">
+			<response></response>
+		</rule>
+	</context>
+	<context name="RUN_AWAY">
+		<rule name="{ run { away | _ } | flee | exit }">
+			<response></response>
+		</rule>
+	</context>
+	<context name="SEARCH">
+		<rule name="{ search }">
+			<response></response>
+		</rule>
+	</context>
+	<context name="START_GAME">
+		<failsafe name="FAILSAFE"/>
+		<rule name="_INIT_">
+			<response>Welcome to the GAME. What is your name?
+#goto(GET_NAME)</response>
+		</rule>
+	</context>
+	<context name="FAILSAFE">
+		<rule name="* { inventory } *">
+			<response>[ ^(inventory of user == []) -&gt;
+	You pack contains nothing but dust and a few balls of lint.
+| ^(inventory of user != []) -&gt;
+	Inventory: ^list_items(inventory of user)
+]</response>
+		</rule>
+		<rule name="* { status | health } *">
+			<response>[ ^(health of user) &lt;= 0 -&gt;
+	You are dead.
+| ^(health of user &gt; 0 and health of user &lt; max_health of user) -&gt;
+	You are injured.
+| ^(health of user == max_health of user) -&gt;
+	You are healthy.
+]
+(HP: ^(health of user) _ / ^(max_health of user) )</response>
+		</rule>
+		<rule name="* help *">
+			<response>What do you need help with?</response>
+		</rule>
+		<rule name="NOMOREALTS">
+			<response>That command is not understood.</response>
+		</rule>
+		<rule name="*">
+			<response>RECOGALT</response>
+		</rule>
+	</context>
+	<context name="GET_NAME">
+		<rule name="* #(^1 == &lt;&lt;&gt;&gt;)">
+			<response>If you&apos;re not going to give me you name I&apos;ll call you Fred.
+#goto(GET_NAME, &lt;&lt; Fred &gt;&gt;)</response>
+		</rule>
+		<rule name="*">
+			<response>#put(user, name, ^1)
+Welcome ^1.
+#goto(WALKING, &lt;&lt; look &gt;&gt;)</response>
+		</rule>
+	</context>
+	<code>// The main/default context</code>
+	<code>searching = []</code>
+	<context name="WALKING">
+		<rule name="&lt;GO&gt; { to the | _ } &lt;DIRECTION&gt;">
+			<response>Heading ^3.</response>
+		</rule>
+		<rule name="&lt;LOOK&gt; MONSTER">
+			<pattern>&lt;LOOK&gt; #defined(monster of location) { monster | creature | beast } </pattern>
+			<pattern>&lt;LOOK&gt; #defined(monster of location) ^(name of monster of location)</pattern>
+			<response>^(long_description of monster of location)</response>
+		</rule>
+		<rule name="&lt;LOOK&gt; { monster | creature | beast }">
+			<response>There is no beast here to examine.</response>
+		</rule>
+		<rule name="&lt;LOOK&gt;">
+			<response>#(searching = [])
+^(long_description of location)</response>
+		</rule>
+		<rule name="&lt;SEARCH&gt; MONSTER">
+			<pattern>&lt;SEARCH&gt; #defined(monster of location) { monster | creature | beast | body | corpse }</pattern>
+			<pattern>&lt;SEARCH&gt; #defined(monster of location) ^(name of monster of location)</pattern>
+			<response>^(if (health of monster of location &gt; 0) then
+	&lt;&lt;It isn&apos;t dead, so when you try to search it it ambushes you.
+		 #goto(FIGHTING, &lt;&lt; _AMBUSH_ &gt;&gt;) &gt;&gt;
+else if (inventory of monster of location == []) then
+	&lt;&lt; Your seach is in vein as the ^(type of monster of location) has
+		nothing of value. &gt;&gt;
+else
+	&lt;&lt; Seaching the corpse you find: ^list_items(inventory of monster of location)
+	#(searching = monster of location) &gt;&gt;
+)</response>
+		</rule>
+		<rule name="&lt;SEARCH&gt; *">
+			<response>What do you want to search?</response>
+		</rule>
+		<rule name="&lt;ATTACK&gt; #defined(monster of location)">
+			<response>[ ^(health of monster of location &lt;= 0) -&gt;
+	It is already dead.
+| ^(health of monster of location &gt; 0) -&gt;
+	#goto(FIGHTING, &lt;&lt; attack &gt;&gt;)
+]
+</response>
+		</rule>
+		<rule name="&lt;ATTACK&gt;">
+			<response>There is nothing to attack.</response>
+		</rule>
+		<rule name="&lt;TAKE&gt; &lt;VISIBLE_ITEM&gt;">
+			<response>You take the ^(type of ^2).
+#remove(searching, inventory, ^2)
+#(
+	if (^2 in instances_of(MONEY) ) then (
+		replace(purse of user, gold, gold of purse of user + gold of ^2);
+		replace(purse of user, silver, silver of purse of user + silver of ^2);
+		replace(purse of user, copper, copper of purse of user + copper of ^2);
+	) else
+		put(user, inventory, ^2)
+)</response>
+		</rule>
+		<rule name="&lt;TAKE&gt;">
+			<response>There isn&apos;t anything here worth taking.</response>
+		</rule>
+		<rule name="&lt;TAKE&gt; *">
+			<response>Take what?</response>
+		</rule>
+	</context>
+	<context name="VISIBLE_ITEM">
+		<code>var rval, items;
+items = [];
+if (searching != []) then
+	items = inventory of searching;
+forall I in items : (
+	if (undefined(rval) and match(pattern of I)) then
+		rval = I
+);
+rval</code>
+	</context>
+	<code>// The fighting context</code>
+	<context name="FIGHTING">
+		<rule name="* &lt;ATTACK&gt; *">
+			<response>You charge the ^(type of monster of location).
+#goto(FIGHTING, &lt;&lt; _COMBAT_ &gt;&gt;)</response>
+		</rule>
+		<rule name="* &lt;LOOK&gt; *">
+			<response>^(long_description of monster of location)</response>
+		</rule>
+		<rule name="&lt;RUN_AWAY&gt;">
+			<response>#calculateAmbush()
+[^(health of user &gt; 0) -&gt;
+	You fled like a little girl. But as you do the sneaky bugger stabs you in the back.
+	#goto(WALKING)
+|^(health of user &lt;= 0) -&gt;
+	As you turn to flee your enemy is able to get in one last fatal attack.
+	#goto(DEAD)
+]</response>
+		</rule>
+		<rule name="_COMBAT_">
+			<response>#calculateAttack()
+^(
+	if (health of user == 0) then
+	&lt;&lt;
+		 You sink to you knees as an unexpected blow saps the last of your strength.
+		#goto(DEAD, &lt;&lt; DEAD &gt;&gt;)
+	&gt;&gt;
+	else if (health of monster of location == 0) then
+	&lt;&lt;
+		With a savage blow you fell the beast.
+		#goto(WALKING)
+	&gt;&gt;
+	else
+	&lt;&lt;
+		You clash with the ^(type of monster of location), each doing the
+		other damage.
+	&gt;&gt;
+)</response>
+		</rule>
+		<rule name="_AMBUSH_">
+			<response>#calculateAmbush()
+[ ^(health of user &lt;= 0) -&gt;
+	The sneak attack is so successful it takes you several moments to
+	realise you have in fact been killed.
+	#goto(DEAD)
+]</response>
+		</rule>
+	</context>
+	<code>// The chatting context</code>
+	<context name="CHATTING">
+	</context>
+	<code>// A final context for having died.</code>
+	<context name="DEAD">
+		<parent name="WALKING"/>
+		<rule name="&lt;ATTACK&gt; #defined(monster of location)">
+			<response>You are but a shade of your former self. You cannot attack.
+</response>
+		</rule>
+		<rule name="&lt;TAKE&gt;">
+			<response>Where would you put it? Ghosts don&apos;t have pockets.</response>
+		</rule>
+		<rule name="&lt;SEARCH&gt; *">
+			<response>What&apos;s the point of that? You won&apos;t be able to use anything you find.</response>
+		</rule>
+	</context>
+	<code>max(X, Y) = (
+	if (X &gt; Y) then
+		X
+	else Y
+)</code>
+	<code>list_items(L) = (
+	if (not list(L)) then
+		description of L
+	else if (L == []) then
+		&lt;&lt;&gt;&gt;
+	else if (length(L) == 1) then
+		description of head(L)
+	else
+		&lt;&lt; ^(description of head(L)), ^list_items(tail(L)) &gt;&gt;
+)</code>
+	<code>calculateAttack() = (
+	var UD, MD;
+	if defined(monster of location) then (
+		UD = max(1, attack of monster of location - defence of user);
+		MD = max(1, attack of user - defence of monster of location);
+		replace(user, health, max(0, health of user - UD));
+		replace(monster of location, health, max(0, health of monster of location - MD));
+	)
+)</code>
+	<code>calculateAmbush() = (
+	var UD, MD;
+	if defined(monster of location) then (
+		UD = max(1, attack of monster of location - defence of user);
+		replace(user, health, max(0, health of user - UD));
+	)
+)</code>
+</script>

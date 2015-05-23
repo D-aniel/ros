@@ -1,0 +1,1 @@
+java -cp "../demos.jar:../framescript.jar" unsw.cse.framescript.pilotsim.PilotUI

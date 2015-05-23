@@ -1,0 +1,1 @@
+java -cp "..\framescript.jar" unsw.cse.framescript.FrameScript ..\scripts\simpleconversation.frs ..\scripts\bot.frs

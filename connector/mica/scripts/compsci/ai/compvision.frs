@@ -1,0 +1,6 @@
+COMPVISION ::
+	trigger { * { computer vision } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ COMPVISION ]);;

@@ -1,0 +1,7 @@
+HCI ::
+	trigger { * { hci | h c i |
+				{ human computer | computer human } { interact~ | interface~ } } * }
+;;
+
+if list(TOPICS) then
+	TOPICS = append(TOPICS, [ HCI ]);;
