@@ -13,8 +13,6 @@ class speechpickup:
 		#rospy.loginfo(fs)
 		#self.pub.publish(data.data)
 		self.pub.publish(data.data)
-	
-		
 		
 	def listener(self):
 		rospy.loginfo("speechpickup: preparing to listen")

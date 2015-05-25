@@ -13,11 +13,9 @@ class speechpickup:
 		#rospy.loginfo(fs)
 		#self.pub.publish(data.data)
 		self.pub.publish(data.data)
-	
-		
 		
 	def listener(self):
-		rospy.loginfo("speechpickup: preparing to listen",data.data)
+		rospy.loginfo("speechpickup: preparing to listen")
 		rospy.init_node('speechrecog', anonymous=True)
 		self.sub = rospy.Subscriber('/recognizer/output', String, self.response)
 		#self.pub = rospy.Publisher('speechtofs', String, queue_size=10)
