@@ -1,8 +1,8 @@
 //load_module("unsw.cse.framescript.GUI");;
 
 _HELLO_ :: { hello | hi | hi there | hey | sup | hay};;
-_DRINK_ :: { drink | water | coke | lemonoade | vodka | gin and tonic };;
-_ORDER_ :: { to buy | to order | get | bring me | want | order | bring | have };;
+_DRINK_ :: { water | coke | lemonade};;
+_ORDER_ :: { to buy | to order | get | bring me | want | order | bring | have | would like};;
 _YES_   :: { yes | yep | yeah | yay };;
 _NO_    :: { no | nope | nah | nay | no thanks | no thank you};;
 _MOVE_  :: { go | move | hurry to | get to };;
@@ -11,7 +11,7 @@ _MANNER_ :: {please | can I | can You | excuse me | thank you | };;
 _IM_ :: {i'm | i am | we | me | im};;
 _SIT_ :: { at | sitting at | located | sitting | here at | here | where};;
 _FAVOURITE_ :: { usual | last order | another one | favourite};;
-_FINISH_ :: {no | nope | nah | nay | no thanks | no thank you | that is all | that's all | no you | finish};;
+_FINISH_ :: {no | nope | nah | nay | no thanks | no thank you | that is all | thats all | that's all | no you | finish};;
 	
 
 STORED_LOCATION;;
@@ -65,30 +65,40 @@ confirmfinish ::
 	]
 ;;
 
+//why isnt favourite priotised over order drink?
+
 making ::
 	domain order
-	trigger { * { <_ORDER_> | <_DRINK_> } *}
-	neworder ==>
-	[
-		Hi, what can I get you?
-	]
-	* <_ORDER_> * <_DRINK_> *==>
-	[
-		You wanted a ^4?
-		#goto(confirmorder)
-	]
-	
-	* <_DRINK_> *==>
-	[
-		You wanted a ^2?
-		#goto(confirmorder)
-	]
+	trigger { * { <_ORDER_> | <_DRINK_> | _FINISH_} *}
 	
 	* <_ORDER_> * <_FAVOURITE_> * ==>
 	[
 		#goto(knowfavourites, ^0)
 	]
-		
+	
+	* <_FAVOURITE_> * <_DRINK_> * ==>
+	[
+		#goto(knowfavourites, ^0)
+	]
+	
+	* <_DRINK_> * <_FAVOURITE_> ==>
+	[
+		#goto(knowfavourites, ^0)
+	]
+	
+	* <_ORDER_> * <_DRINK_> * ==>
+	[
+		:checkOrder ^4
+		#goto(confirmorder)
+	]
+	
+	
+	* <_DRINK_> *==>
+	[
+		:checkOrder ^2
+		#goto(confirmorder)
+	]
+			
 	{Excuse me | Can you | Can I} { can I | can you | please | } <_ORDER_> * { please | pretty please | thank you} ==>
 	[
 		I don't know what ^3 is. 
@@ -98,18 +108,18 @@ making ::
 	{I want | I | } {not <_DRINK_>} ==>
 	[
 		I don't know what ^2 is. 
-		#goto(confused, conf)
+		#goto(confused)
 	]
 	
 	* <_ORDER_> * ==>
 	[
 		I don't know what ^3 is. 
-		#goto(confused, conf)
+		#goto(confused)
 	]
-	
-	* <_NO_> * ==>
+// why isnt it going to location?
+	* <__FINISH__> * ==>
 	[
-		Where should I bring these to?
+		:finishOrder None
 		#goto(location)
 	]
 ;;
@@ -118,18 +128,13 @@ making ::
 confused ::
 	domain order
 	trigger { confusion }
-	conf ==> 
-	[
-		What did you want to order again? 
-	]
 	* <_DRINK_> * ==>
 	[
-		:I see you meant ^2. And where did you want it?
-		#goto(location)
+		:confirmorder ^2
+		#goto(making)
 	]
 	* <_FAVOURITE_> * ==>
 	[
-		I see you meant your favourite.
 		#goto(knowfavourites, ^0)
 	]	
 	*  ==>
@@ -141,47 +146,65 @@ confused ::
 
 
 knowfavourites ::
-	domain fav
+	domain order
 	trigger {* <_FAVOURITE_> *}
 
-	
-	* <_FAVOURITE_> <_DRINK_> * ==> 
+	* <_FAVOURITE_> * <_DRINK_> * ==> 
 	[
-		:setFavourite ^2
-		#goto(getfavourite)
+		:setFavourite ^4
 	]
 	
-	* <_ORDER_> my <_FAVOURITE_> * ==>
+	* <_DRINK_> * <_FAVOURITE_> * ==> 
+	[
+		:setFavourite ^2
+	]
+	
+	* <_ORDER_> * <_FAVOURITE_> * ==>
 	[
 		:getFavourite known
-		#goto(location)
+		#goto(making)
 	]
 	
-	* <_FAVOURITE_>  * ==> 
+	* <_ORDER_> * <_DRINK_> * ==>
+	[
+		#goto(making, ^0)
+	]
+	
+	* <_DRINK_> * <_ORDER_> * ==>
+	[
+		#goto(making, ^0)
+	]
+	
+	What is <_FAVOURITE_>  * ==> 
 	[
 		What did you want me to do with your favourite drink?
 	]
 	
-	* ==>
+	* <_FAVOURITE_> * ==> 
 	[
-		What did you want me to do with your favourite drink?
-	]
-	
+		:queryFav what
+	]	
 ;;
 
-setfavourite ::
-	domain fav
-	trigger { setfavourite }
-	* <_DRINK_> * ==>
-	[
-		:setFavourite ^2
-		goto(making)
-	]
-	* ==>
-	[
-		No favourite? What drink did you want a drink anyway?
-	]
-;;
+//setfavourite ::
+//	domain fav
+//	trigger { setfavourite }
+//	
+//	setfavourite==>
+//	[
+//		What is your favourite drink
+//	]
+//	
+//	* <_DRINK_> * ==>
+//	[
+//		:setFavourite ^2
+//		goto(making)
+//	]
+//	* ==>
+//	[
+//		No favourite? What drink did you want a drink anyway?
+//	]
+//;;
 
 confirmorder::
 	domain order
@@ -193,14 +216,14 @@ confirmorder::
 	
 	* { <_YES_> } * ==>
 	[
-		Ok, I'll bring that with me. Anything else?
+		:confirmOrder None
 		#goto(making)
 	]
 	
 	* <_NO_> * ==>
 	[
-		I must of misheard, what did you want to do again?
-		#previous_topic()
+		:cancelOrder None
+		#goto(making)
 		
 	]
 	//* ==>
@@ -233,22 +256,22 @@ getfavourite ::
 ;;
 
 
-location::
-	domain loc
+location ::
+	domain order
 	trigger {* <_LOCATION_> *}
 	
 	//on_entry hello there
 	
 	* <_LOCATION_> * ==>
 	[
-		:confirmLocation ^2
+		:checkLocation ^2
 		#goto(confirmlocation)
-		#(STORED_LOCATION = ^2)
+		//#(STORED_LOCATION = ^2)
 	]
 	
 	* <_NO_> * ==>
 	[
-		My bad, I thought that was all you want?
+		:cancelLocation None
 		#goto(making)
 	]
 	
@@ -264,7 +287,7 @@ confirmlocation::
 	trigger {confirmlocation}
 	* <_YES_> * ==>
 	[
-		: confirmLocation #defined(STORED_LOCATION)
+		:confirmLocation final
 		#goto(making)
 	]
 
@@ -276,12 +299,7 @@ confirmlocation::
 	
 	* <_LOCATION_> * ==>
 	[
-		It's at ^2?
-	]
-	
-	* ==>
-	[
-		What? confirmlocation()
+		#goto(location, ^0)
 	]
 ;;
 greeting::
@@ -315,10 +333,38 @@ greeting::
 ;;
 
 unsure::
+	
+	* <_ORDER_> * <_DRINK_> * ==>
+	[
+		#goto(making, ^0)
+	]
+	
+	* <_DRINK_> * <_ORDER_> * ==>
+	[
+		#goto(making, ^0)
+	]
+	
+	* <_ORDER_> * ==>
+	[
+		#goto(making, ^0)
+	]
+	
+	* <_LOCATION_> * ==>
+	[
+		#goto(location, ^0)
+	]
+	
+	* <_FAVOURITE_> * ==>
+	[
+		#goto(knowfavourites, ^0)
+	]
+	
 	* ==>
 	[
-		Failsafe:I don't understand you by ^0
+		:failSafe ^0
 	]
+	
+	
 ;;
 
 failsafe(demo, unsure);;

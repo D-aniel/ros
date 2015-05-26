@@ -1,0 +1,825 @@
+//load_module("unsw.cse.framescript.GUI");;
+
+
+CURRENT_ORDER = << >>;;
+CURRENT_LOCATION = << >>;;
+CURRENT_AOVOURITE = << >>;;
+
+_HELLO_ :: { hello | hi | hi there | hey | sup | hay};;
+_DRINK_ :: { water | coke | lemonade};;
+_ORDER_ :: { to buy | to order | get | bring me | want | order | bring | have | would like};;
+_YES_   :: { yes | yep | yeah | yay };;
+_NO_    :: { no | nope | nah | nay | no thanks | no thank you};;
+_MOVE_  :: { go | move | hurry to | get to };;
+_LOCATION_ ::
+	{ here | hay } ==> here
+	{Desk A | Desk B | Desk C | Door | No where | over there | over | there};;
+_MANNER_ :: {please | can I | can You | excuse me | thank you | };;
+_IM_ :: {i'm | i am | we | me | im};;
+_SIT_ :: { at | sitting at | located | sitting | here at | here | where};;
+_FAVOURITE_ :: { usual | last order | another one | favourite};;
+_FINISH_ :: {no | nope | nah | nay | no thanks | no thank you | that is all | thats all | that's all | no you | finish};;
+	
+
+			
+main ::
+//	domain order
+//	trigger { * {<_MOVE_> | <_LOCATION_>} *  } 
+	
+	Bring me the glass ==>
+	[
+		Bringing you the glass
+	]
+	
+	* <_SIT_> * <_LOCATION_> * ==>
+	[
+		:setLocation ^4 
+	]
+	
+	<_IM_> *  ==>
+	[
+		I don't know where ^2 is.
+	]
+	
+	 * <_MOVE_> * <_LOCATION_> * ==>
+	[
+		:goLocation: ^4
+	]
+;;
+
+
+confirmfinish ::
+//	domain order
+//	trigger { confirmfinish }
+	
+	* <_YES_> * ==>
+	[
+		Ok, where should I bring these to?
+		#goto(location)
+	]
+	
+	* { <_YES_> | get } * ==>
+	[
+		Ok, where should I bring these to?
+		#goto(location)
+	]
+	
+	* <_NO_> * ==>
+	[
+		I must of misheard, what did else did you want?
+		#goto(making)	
+	]
+;;
+
+//why isnt favourite priotised over order drink?
+
+making ::
+	failsafe unsure
+//	domain order
+//	trigger { * { <_ORDER_> | <_DRINK_> } *}
+	
+	* <_ORDER_> * <_FAVOURITE_> * ==>
+	[
+		#goto(knowfavourites, ^0)
+	]
+	
+	* <_FAVOURITE_> * <_DRINK_> * ==>
+	[
+		#goto(knowfavourites, ^0)
+	]
+	
+	* <_DRINK_> * <_FAVOURITE_> ==>
+	[
+		#goto(knowfavourites, ^0)
+	]
+	
+	* <_ORDER_> * <_DRINK_> * ==>
+	[
+		:checkOrder ^4
+		#goto(confirmorder, << _CONFIRM_ ^4 >>)
+	]
+	
+	
+	* <_DRINK_> *==>
+	[
+		:checkOrder ^2
+		#goto(confirmorder, << _CONFIRM_ ^2 >>)
+	]
+			
+	{Excuse me | Can you | Can I} { can I | can you | please | } <_ORDER_> * { please | pretty please | thank you} ==>
+	[
+		I don't know what ^3 is. 
+		#goto(confused, conf)
+	]
+	
+	{I want | I | } {not <_DRINK_>} ==>
+	[
+		I don't know what ^2 is. 
+		#goto(confused)
+	]
+	
+	* <_ORDER_> * ==>
+	[
+		I don't know what ^3 is. 
+		#goto(confused)
+	]
+// why isnt it going to location?
+	* <_NO_> * ==>
+	[
+		:finishOrder None
+		#goto(location)
+	]
+;;
+
+
+confused ::
+//	domain order
+//	trigger { confusion }
+	* <_DRINK_> * ==>
+	[
+		:confirmorder ^2
+		#goto(making)
+	]
+	* <_FAVOURITE_> * ==>
+	[
+		#goto(knowfavourites, ^0)
+	]	
+	*  ==>
+	[
+		I still don't recognise ^0
+	]
+	
+;;
+
+
+knowfavourites ::
+	failsafe unsure
+//	domain order
+//	trigger {* <_FAVOURITE_> *}
+
+	* <_FAVOURITE_> * <_DRINK_> * ==> 
+	[
+		:setFavourite ^4
+	]
+	
+	* <_DRINK_> * <_FAVOURITE_> * ==> 
+	[
+		:setFavourite ^2
+	]
+	
+	* <_ORDER_> * <_FAVOURITE_> * ==>
+	[
+		:getFavourite known
+		#goto(making)
+	]
+	
+	* <_ORDER_> * <_DRINK_> * ==>
+	[
+		#goto(making, ^0)
+	]
+	
+	* <_DRINK_> * <_ORDER_> * ==>
+	[
+		#goto(making, ^0)
+	]
+	
+	What is <_FAVOURITE_>  * ==> 
+	[
+		What did you want me to do with your favourite drink?
+	]
+	
+	* <_FAVOURITE_> * ==> 
+	[
+		:queryFav what
+	]	
+;;
+
+//setfavourite ::
+//	domain order
+//	trigger { setfavourite }
+//	
+//	setfavourite==>
+//	[
+//		What is your favourite drink
+//	]
+//	
+//	* <_DRINK_> * ==>
+//	[
+//		:setFavourite ^2
+//		goto(making)
+//	]
+//	* ==>
+//	[
+//		No favourite? What drink did you want a drink anyway?
+//	]
+//;;
+
+confirmorder::
+//	domain order
+//	trigger {confirm}
+//	drink: << >>
+	
+	_CONFIRM_ * ==>
+	[
+//		#put(drink, ^1)
+		#(_CURRENT_ORDER_ = ^1)
+		:confirmOrder ^1
+		So you want me to bring you the ^_CURRENT_ORDER_?
+	]
+	
+	* { <_YES_> } * ==>
+	[
+		:confirmOrder ^_CURRENT_ORDER_
+		#goto(making)
+	]
+	
+	* <_NO_> * ==>
+	[
+		:cancelOrder ^_CURRENT_ORDER_
+		#goto(making)
+		
+	]
+	//* ==>
+	//[::confirmorder]
+;;
+
+getfavourite ::
+//	domain order
+//	trigger {getfavourite}
+	shouldiget ==>
+	[
+		Did you want me to get that for you?
+	]
+	
+	* <_YES_> * ==>
+	[
+		Ok, where do you want me to bring it to.
+		#goto(location)
+	]
+
+	* <_NO_> * ==>
+	[
+		Ok, nevermind then.
+		#goto(making)
+	]
+
+	* ==>
+	[	#goto(favourites, ^0)
+		:favourite
+	]
+;;
+
+
+location::
+	failsafe unsure
+//	domain order
+//	trigger {* <_LOCATION_> *}
+	
+	//on_entry hello there
+	
+	//#put(drink, ^1)
+
+	
+	* <_LOCATION_> * ==>
+	[
+		:checkLocation ^2 ^current_context()
+		#goto(confirmlocation, << _CONFIRMLOC_ ^2 >>)
+	]
+	
+	* <_NO_> * ==>
+	[
+		:cancelLocation None
+		#goto(making)
+	]
+	
+	* ==>
+	[
+		Where did you mean by ^0 :location
+	]
+	
+;;	
+
+confirmlocation::
+//	domain order
+	loc: << >>
+
+	_CONFIRMLOC_ * ==>
+	[	
+		You are sitting at ^1? ^current_context()
+		#put(loc, ^1)
+	] 
+		
+	* <_YES_> * ==>
+	[
+		#(_CURRENT_LOCATION_ = ^loc)
+		:confirmloc ^loc ^current_context()
+		So you want me to bring you the ^_CURRENT_LOCATION_?
+		#goto(making)
+	]
+
+	* <_NO_> * ==>
+	[
+		Oh did you mean another location?
+		#goto(location)
+	]
+	
+	* <_LOCATION_> * ==>
+	[
+		#goto(location, ^0)
+	]
+;;
+
+greeting::
+	failsafe unsure
+
+	_INIT_ ==>
+	[
+		Welcome to Sunshine Burgers. What would you like to order?
+	]
+	
+		
+	{ * bye * } ==>
+	[
+		Good bye.		
+		#goto(making)
+	]
+	
+	* < _HELLO_ > * ==>
+	[ 
+		Hello. How are you?
+		#goto(making)
+	]
+	
+	{I'm | I am }{ bad | not { good | well } } * ==>
+	[ 
+		I'm sorry to hear that, did you want a drink to cheer you up?		
+		#goto(making) 
+	]
+		
+	* { good | fine | well } * ==>
+	[ 
+		Well, that's good to hear. Celebrate it with a drink? 		
+		#goto(making)
+	]
+;;
+
+order_topic::
+	domain order
+	trigger { _INIT_ }
+	
+	_INIT_ ==> #goto(greeting, ^0)
+;;
+
+unsure::
+	* <_ORDER_> * <_DRINK_> * ==>
+	[
+		#goto(making, ^0)
+	]
+	
+	* <_DRINK_> * <_ORDER_> * ==>
+	[
+		#goto(making, ^0)
+	]
+	
+	* <_ORDER_> * ==>
+	[
+		#goto(making, ^0)
+	]
+	
+	* <_LOCATION_> * ==>
+	[
+		#goto(location, ^0)
+	]
+	
+	* <_FAVOURITE_> * ==>
+	[
+		#goto(knowfavourites, ^0)
+	]
+;;
+
+global_failsafe::
+	* ==>
+	[
+		:failSafe ^0 ^current_context()
+	]
+;;
+
+//failsafe(order, unsure);;
+failsafe(order, global_failsafe);;
+
+bot(order, << _INIT_ >>);;
+
+//script_browser();;
+//frame_browser();;//load_module("unsw.cse.framescript.GUI");;
+
+
+CURRENT_ORDER = << >>;;
+CURRENT_LOCATION = << >>;;
+CURRENT_AOVOURITE = << >>;;
+
+_HELLO_ :: { hello | hi | hi there | hey | sup | hay};;
+_DRINK_ :: { water | coke | lemonade};;
+_ORDER_ :: { to buy | to order | get | bring me | want | order | bring | have | would like};;
+_YES_   :: { yes | yep | yeah | yay };;
+_NO_    :: { no | nope | nah | nay | no thanks | no thank you};;
+_MOVE_  :: { go | move | hurry to | get to };;
+_LOCATION_ ::
+	{ here | hay } ==> here
+	{Desk A | Desk B | Desk C | Door | No where | over there | over | there};;
+_MANNER_ :: {please | can I | can You | excuse me | thank you | };;
+_IM_ :: {i'm | i am | we | me | im};;
+_SIT_ :: { at | sitting at | located | sitting | here at | here | where};;
+_FAVOURITE_ :: { usual | last order | another one | favourite};;
+_FINISH_ :: {no | nope | nah | nay | no thanks | no thank you | that is all | thats all | that's all | no you | finish};;
+	
+
+			
+main ::
+//	domain order
+//	trigger { * {<_MOVE_> | <_LOCATION_>} *  } 
+	
+	Bring me the glass ==>
+	[
+		Bringing you the glass
+	]
+	
+	* <_SIT_> * <_LOCATION_> * ==>
+	[
+		:setLocation ^4 
+	]
+	
+	<_IM_> *  ==>
+	[
+		I don't know where ^2 is.
+	]
+	
+	 * <_MOVE_> * <_LOCATION_> * ==>
+	[
+		:goLocation: ^4
+	]
+;;
+
+
+confirmfinish ::
+//	domain order
+//	trigger { confirmfinish }
+	
+	* <_YES_> * ==>
+	[
+		Ok, where should I bring these to?
+		#goto(location)
+	]
+	
+	* { <_YES_> | get } * ==>
+	[
+		Ok, where should I bring these to?
+		#goto(location)
+	]
+	
+	* <_NO_> * ==>
+	[
+		I must of misheard, what did else did you want?
+		#goto(making)	
+	]
+;;
+
+//why isnt favourite priotised over order drink?
+
+making ::
+	failsafe unsure
+//	domain order
+//	trigger { * { <_ORDER_> | <_DRINK_> } *}
+	
+	* <_ORDER_> * <_FAVOURITE_> * ==>
+	[
+		#goto(knowfavourites, ^0)
+	]
+	
+	* <_FAVOURITE_> * <_DRINK_> * ==>
+	[
+		#goto(knowfavourites, ^0)
+	]
+	
+	* <_DRINK_> * <_FAVOURITE_> ==>
+	[
+		#goto(knowfavourites, ^0)
+	]
+	
+	* <_ORDER_> * <_DRINK_> * ==>
+	[
+		:checkOrder ^4
+		#goto(confirmorder, << _CONFIRM_ ^4 >>)
+	]
+	
+	
+	* <_DRINK_> *==>
+	[
+		:checkOrder ^2
+		#goto(confirmorder, << _CONFIRM_ ^2 >>)
+	]
+			
+	{Excuse me | Can you | Can I} { can I | can you | please | } <_ORDER_> * { please | pretty please | thank you} ==>
+	[
+		I don't know what ^3 is. 
+		#goto(confused, conf)
+	]
+	
+	{I want | I | } {not <_DRINK_>} ==>
+	[
+		I don't know what ^2 is. 
+		#goto(confused)
+	]
+	
+	* <_ORDER_> * ==>
+	[
+		I don't know what ^3 is. 
+		#goto(confused)
+	]
+// why isnt it going to location?
+	* <_NO_> * ==>
+	[
+		:finishOrder None
+		#goto(location)
+	]
+;;
+
+
+confused ::
+//	domain order
+//	trigger { confusion }
+	* <_DRINK_> * ==>
+	[
+		:confirmorder ^2
+		#goto(making)
+	]
+	* <_FAVOURITE_> * ==>
+	[
+		#goto(knowfavourites, ^0)
+	]	
+	*  ==>
+	[
+		I still don't recognise ^0
+	]
+	
+;;
+
+
+knowfavourites ::
+	failsafe unsure
+//	domain order
+//	trigger {* <_FAVOURITE_> *}
+
+	* <_FAVOURITE_> * <_DRINK_> * ==> 
+	[
+		:setFavourite ^4
+	]
+	
+	* <_DRINK_> * <_FAVOURITE_> * ==> 
+	[
+		:setFavourite ^2
+	]
+	
+	* <_ORDER_> * <_FAVOURITE_> * ==>
+	[
+		:getFavourite known
+		#goto(making)
+	]
+	
+	* <_ORDER_> * <_DRINK_> * ==>
+	[
+		#goto(making, ^0)
+	]
+	
+	* <_DRINK_> * <_ORDER_> * ==>
+	[
+		#goto(making, ^0)
+	]
+	
+	What is <_FAVOURITE_>  * ==> 
+	[
+		What did you want me to do with your favourite drink?
+	]
+	
+	* <_FAVOURITE_> * ==> 
+	[
+		:queryFav what
+	]	
+;;
+
+//setfavourite ::
+//	domain order
+//	trigger { setfavourite }
+//	
+//	setfavourite==>
+//	[
+//		What is your favourite drink
+//	]
+//	
+//	* <_DRINK_> * ==>
+//	[
+//		:setFavourite ^2
+//		goto(making)
+//	]
+//	* ==>
+//	[
+//		No favourite? What drink did you want a drink anyway?
+//	]
+//;;
+
+confirmorder::
+//	domain order
+//	trigger {confirm}
+//	drink: << >>
+	
+	_CONFIRM_ * ==>
+	[
+//		#put(drink, ^1)
+		#(_CURRENT_ORDER_ = ^1)
+		:confirmOrder ^1
+		So you want me to bring you the ^_CURRENT_ORDER_?
+	]
+	
+	* { <_YES_> } * ==>
+	[
+		:confirmOrder ^_CURRENT_ORDER_
+		#goto(making)
+	]
+	
+	* <_NO_> * ==>
+	[
+		:cancelOrder ^_CURRENT_ORDER_
+		#goto(making)
+		
+	]
+	//* ==>
+	//[::confirmorder]
+;;
+
+getfavourite ::
+//	domain order
+//	trigger {getfavourite}
+	shouldiget ==>
+	[
+		Did you want me to get that for you?
+	]
+	
+	* <_YES_> * ==>
+	[
+		Ok, where do you want me to bring it to.
+		#goto(location)
+	]
+
+	* <_NO_> * ==>
+	[
+		Ok, nevermind then.
+		#goto(making)
+	]
+
+	* ==>
+	[	#goto(favourites, ^0)
+		:favourite
+	]
+;;
+
+
+location::
+	failsafe unsure
+//	domain order
+//	trigger {* <_LOCATION_> *}
+	
+	//on_entry hello there
+	
+	//#put(drink, ^1)
+
+	
+	* <_LOCATION_> * ==>
+	[
+		:checkLocation ^2 ^current_context()
+		#goto(confirmlocation, << _CONFIRMLOC_ ^2 >>)
+	]
+	
+	* <_NO_> * ==>
+	[
+		:cancelLocation None
+		#goto(making)
+	]
+	
+	* ==>
+	[
+		Where did you mean by ^0 :location
+	]
+	
+;;	
+
+confirmlocation::
+//	domain order
+	loc: << >>
+
+	_CONFIRMLOC_ * ==>
+	[	
+		You are sitting at ^1?
+		#put(loc, ^1)
+	] 
+		
+	* <_YES_> * ==>
+	[
+		#(_CURRENT_LOCATION_ = ^loc)
+		:confirmLocation ^loc
+		So you want me to bring you the ^_CURRENT_LOCATION_?
+		#goto(making)
+	]
+
+	* <_NO_> * ==>
+	[
+		Oh did you mean another location?
+		#goto(location)
+	]
+	
+	* <_LOCATION_> * ==>
+	[
+		#goto(location, ^0)
+	]
+;;
+
+greeting::
+	failsafe unsure
+
+	_INIT_ ==>
+	[
+		Welcome to Sunshine Burgers. What would you like to order?
+	]
+	
+		
+	{ * bye * } ==>
+	[
+		Good bye.		
+		#goto(making)
+	]
+	
+	* < _HELLO_ > * ==>
+	[ 
+		Hello. How are you?
+		#goto(making)
+	]
+	
+	{I'm | I am }{ bad | not { good | well } } * ==>
+	[ 
+		I'm sorry to hear that, did you want a drink to cheer you up?		
+		#goto(making) 
+	]
+		
+	* { good | fine | well } * ==>
+	[ 
+		Well, that's good to hear. Celebrate it with a drink? 		
+		#goto(making)
+	]
+;;
+
+order_topic::
+	domain order
+	trigger { _INIT_ }
+	
+	_INIT_ ==> #goto(greeting, ^0)
+;;
+
+unsure::
+	* <_ORDER_> * <_DRINK_> * ==>
+	[
+		#goto(making, ^0)
+	]
+	
+	* <_DRINK_> * <_ORDER_> * ==>
+	[
+		#goto(making, ^0)
+	]
+	
+	* <_ORDER_> * ==>
+	[
+		#goto(making, ^0)
+	]
+	
+	* <_LOCATION_> * ==>
+	[
+		#goto(location, ^0)
+	]
+	
+	* <_FAVOURITE_> * ==>
+	[
+		#goto(knowfavourites, ^0)
+	]
+;;
+
+global_failsafe::
+	* ==>
+	[
+		:failSafe ^0 ^current_context()
+	]
+;;
+
+//failsafe(order, unsure);;
+failsafe(order, global_failsafe);;
+
+bot(order, << _INIT_ >>);;
+
+//script_browser();;
+//frame_browser();;
