@@ -1,1 +1,1 @@
-bot(demo, << init >>);;
+bot(order, << _INIT_ >>);;

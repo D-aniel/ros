@@ -1,8 +1,5 @@
-<s> MOVE FORWARD </s>
-<s> MOVE BACKWARD </s>
-<s> BRING ME THE GLASS </s>
 <s> BRING ME THE COKE </s>
-<s> PASS ME THE WALLET </s>
+<s> PASS ME THE COKE </s>
 <s> HELLO </s>
 <s> HI THERE </s>
 <s> I LIKED TO BUY A WATER </s>
@@ -14,14 +11,11 @@
 <s> YES PLEASE </s>
 <s> YEAH </s>
 <s> GO THERE </s>
-<s> MOVE HERE </s>
-<s> HURRY OVER THERE </s>
 <s> CAN YOU </s>
 <s> EXCUSE ME </s>
 <s> I AM </s>
 <s> I'M </s>
 <s> WE ME </s>
-<s> SITTING AT </s>
 <s> LOCATED </s>
 <s> WHERE </s>
 <s> MY FAVOURITE DRINK IS COKE </s>
@@ -31,13 +25,22 @@
 <s> ORDER MY FAV </s>
 <s> I'M AT DESK A </s>
 <s> I'M AT THE DOOR </s>
+<s> I'M OVER AT DESK B </s>
 <s> I'M SITTING AT DESK B </s>
-<s> LAST ORDER </s>
 <s> THAT IS ALL </s>
 <s> THAT'S ALL </s>
 <s> ANOTHER ONE </s>
-<s> VODKA </s>
 <s> WATER </s>
 <s> DESK C </s>
-<s> COULD </s>
 <s> MAY </s>
+<s> AFFIRMATIVE </s>
+<s> CORRECT </s>
+<s> NO THATS ALL THANKS </s>
+<s> IM FINISHED </s>
+<s> IM FINISH </s>
+<s> GRAB ME A WATER </s>
+<s> GRAB ME A BOTTLE OF WATER PLEASE </s>
+<s> I WOULD LIKE A COKE </s>
+<s> I WANT A LEMONADE </s>
+<s> GET ME A COKE </s>
+<s> I LIKE A COKE PLEASE </s>

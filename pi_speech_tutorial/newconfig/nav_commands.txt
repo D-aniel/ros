@@ -1,6 +1,3 @@
-move forward
-move backward
-bring me the glass
 bring me the coke
 pass me the coke
 hello
@@ -14,14 +11,11 @@ no thank you
 yes please
 yeah
 go there
-move here
-hurry over there
 can you
 excuse me
 i am
 i'm
 we me
-sitting at
 located 
 where
 my favourite drink is coke
@@ -31,12 +25,22 @@ order my favourite
 order my fav
 i'm at desk a
 i'm at the door
+i'm over at desk b
 i'm sitting at desk b
-last order
 that is all
 that's all
 another one
-vodka
 water
 desk c
 may
+affirmative
+correct
+no thats all thanks
+im finished
+im finish
+grab me a water
+grab me a bottle of water please
+i would like a coke 
+i want a lemonade
+get me a coke
+i like a coke please

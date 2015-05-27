@@ -24,71 +24,29 @@ class listener():
 		self.string = data.data
 		#rospy.loginfo("callbackheard: %s", data.data)
 		self.p.stdin.write(self.string+'.')
-		#self.p.stdin.flush()
+		self.p.stdin.flush()
 		result = self.p.stdout.readline()
 		self.p.stdin.write(self.string+'.')
-		#self.p.stdin.flush()
+		self.p.stdin.flush()
 		result = self.p.stdout.readline()
 		#process framescript bridge
 		
-		match = re.match(r'\? : ([a-zA-Z]+) (.*)',result)
+		match = re.match(r'\? : ([a-zA-Z]+) ({door|desk a|desk b|desk c|coke|lemonade|water}) (.*)',result)
 		if match:
-			if match.group(1) == "checkOrder":
-				rospy.loginfo("So you are after %s", match.group(2))
-				self.req.currOrder = match.group(2)
-			elif match.group(1) == "cancelOrder":
-				rospy.loginfo("I must of misheard, what did you want to do again?")
-				self.req.currOrder = ""
-			elif match.group(1) == "confirmOrder":
-				if self.req.currOrder:
-					rospy.loginfo("Ok I'll bring %s with me", self.req.currOrder)
-					self.req.setOrder()
-				elif not self.req.currOrder:
-					rospy.loginfo("You haven't told me what to bring")
-				self.currOrder = ""
-			elif match.group(1) == "checkLocation":
-				rospy.loginfo("You're sitting at %s?",match.group(2))
+			if match.group(1) == "FINISH":
+				rospy.loginfo("%s", match.group(3))
 				self.req.currLoc = match.group(2)
-			elif match.group(1) == "confirmLocation":
-				rospy.loginfo("Ok, I'll note down that you're sitting there")
-				self.req.location = self.req.currLoc
-			elif match.group(1) == "cancelLocation":
-				rospy.loginfo("I must have heard the wrong location, what did want to do again?")
-				self.req.currLoc = ""
-			elif match.group(1) == "setFavourite":
-				rospy.loginfo("Your new favourite is %s", match.group(2))
-				self.req.currFav = match.group(2)
-			elif match.group(1) == "queryFav":
-				if self.req.currFav:
-					rospy.loginfo("What did you want me to do with %s", self.req.currFav)
-				else:
-					rospy.loginfo("I don't know your favourite drink")	
-			elif match.group(1) == "getFavourite":
-				if self.req.currFav:
-					rospy.loginfo("Ok, I'll grab a %s", self.req.currFav)
-					self.req.currOrder = self.req.currFav
-					self.req.setOrder()
-				else:
-					rospy.loginfo("I don't know what your favourite is")
-					#self.p.stdin.write("setfavourite")
-					#result = self.p.stdout.readline()
-			elif match.group(1) == "failSafe":
-				rospy.loginfo("I dont understand %s",match.group(2))
-			elif match.group(1) == "finishOrder":
-				if self.req.isReady():
-					rospy.loginfo("Ok I'm heading off now")
-					rospy.loginfo("%s %s", self.req.location, ''.join(str(o) for o in self.req.order))
-					
-					msg = self.req.location + " " + ''.join(str(o) for o in self.req.order)
-					self.pub.publish(msg)
-				elif not self.req.location:
-					rospy.loginfo("Where do you want me to take them")
-				else:
-					rospy.loginfo("You haven't ordered anything")
-			rospy.loginfo("matched: %s(%s)",match.group(1),match.group(2))
+				msg = match.group(2) + " " + ''.join(str(o) for o in self.req.order)
+				self.pub.publish(msg)
+				self.req.status = Request.MOTION
+			elif match.group(1) == "ORDER":
+				rospy.loginfo("Adding %s to order",match.group(2))
+				self.req.setOrder(match.group(2))
+				rospy.loginfo("%s",match.group(3))
+				#self.req.currOrder = ""
 			
 		else:
-			rospy.loginfo("unmatched: %s",result)
+			rospy.loginfo("Framescript: %s",result)
 		
 		
 		
@@ -107,9 +65,12 @@ class listener():
 		self.p = subp.Popen(cmd, stdin=subp.PIPE,stdout=subp.PIPE)
 		#rospy.loginfo("init: %s",p.stdout.readline()) #ignore Framescript init text
 		self.p.stdout.readline()
-		self.p.stdin.write('Hello.')
-		#self.req = request()
-		rospy.loginfo("Init hello %s", self.p.stdout.readline())
+		self.p.stdin.write('SETFAV none.')
+		rospy.loginfo("Init %s", self.p.stdout.readline())
+		self.p.stdin.write('SETLOC none.')
+		rospy.loginfo("Init %s", self.p.stdout.readline())
+		self.p.stdin.write('SETLOC none.')
+		rospy.loginfo("Init %s", self.p.stdout.readline())
 		#while not rospy.is_shutdown():
 			#rospy.loginfo("Listening..")
 			#if (self.string):
